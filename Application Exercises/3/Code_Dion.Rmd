@@ -1,0 +1,28 @@
+---
+title: '3'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+data(sleep)
+summary(sleep)
+```
+
+```{r}
+groups <- c("Group 1","Group 2")
+group1_extrasleep <- sleep$extra[sleep$group==1]
+group2_extrasleep <- sleep$extra[sleep$group==2]
+
+boxplot(group1_extrasleep, group2_extrasleep, names=groups, horizontal = TRUE, main = "Extra Sleep Hours", xlab = "Hours")
+```
+
+```{r}
+t.test(group1_extrasleep, group2_extrasleep,
+       alternative = c("two.sided"))
+```
+
+The t-test indicates that if we reject the null hypothesis, there is a 7.94% chance that the null hypothesis is actually true. Using the standard significance level of 0.05, we will not reject the null hypothesis. Though, given our p-value is only slightly larger than 0.05, we face some risk of a Type II error.
