@@ -1,0 +1,82 @@
+---
+title: 'Application Exercise 1'
+author: 'Willem van den Boom'
+date: "2019-08-01"
+output: html_document
+---
+
+# R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML documents. R Markdown allows one to add chunks of R Code within a Markdown document.
+
+
+## R chunks
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+x <- 1+1
+print(x)
+```
+
+
+Knitting uses its own R environment while running chunks individually uses the R environment of the console. Therefore, evaluating the chunk below a second time in a row prints `1` twice while knitting this Rmd file will print `1` and `2`.
+
+```{r}
+print(x)
+x <- 1
+print(x)
+```
+
+## Including plots
+
+You can also embed plots. For example:
+
+```{r}
+plot(x = c(1, 2, 3), y = c(3, 3, 4))
+```
+
+
+
+# Code from the textbook
+
+Change `eval=FALSE` to `eval=TRUE` in the next chunk and try knitting it. Can you make it knit?
+
+
+```{r eval=FALSE}
+##########################################
+# section 3.1 Introduction to R
+##########################################
+
+# import a csv file of the total annual sales for each customer
+sales <- read.csv("yearly_sales.csv")
+
+# examine the imported dataset
+head(sales)
+summary(sales)
+
+# plot num_of_orders vs. sales
+plot(sales$num_of_orders,sales$sales_total,
+     main="Number of Orders vs. Sales")
+
+# perform a statistical analysis (fit a linear regression model)
+results <- lm(sales$sales_total ~ sales$num_of_orders)
+results
+summary(results)
+```
+
+
+# Functions in R
+
+Try to understand the following code and its output. Feel free to edit it to see how its output changes.
+
+```{r}
+addition <- function(x, y) {
+  sum <- x+y
+  return(sum)
+}
+
+addition(2, 3)
+addition
+sd
+```
