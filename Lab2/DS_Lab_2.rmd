@@ -1,0 +1,56 @@
+---
+title: "DS_Lab_2"
+author: "Julie Jung"
+date: "8/16/2019"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise 1
+
+```{r message = FALSE}
+library(readr)
+transport <- read_csv("public-transport-utilisation-average-public-transport-ridership.csv")
+```
+
+
+# Exercise 2
+```{r}
+summary(transport)
+unique(transport$year)
+unique(transport$type_of_public_transport)
+unique(transport$average_ridership)
+```
+
+The dataset consists of three columns: the year of public transport usage, the type of public transport used and the average public transport ridership by year. It includes data from 1995 to 2016, with four different types of public transport (MRT, LRT, bus, taxi), and average ridership ranging from 0 to 3,939,000.
+
+
+# Exercise 3
+
+```{r}
+min(transport$year[transport$type_of_public_transport == "LRT" & transport$average_ridership != 0])
+```
+
+The LRT opened in the year 1999.
+
+
+# Exercise 4
+
+```{r}
+hist(transport$average_ridership / 365)
+```
+
+The distribution of the average daily ridership is not unimodal. The data is skewed by the large number of '0' values, which may reflect incomplete records, for example, the average ridership values for taxis from 1995-2000 reflect '0', when taxis were actually in operation. This suggests that the data is 'dirty data'. 
+
+
+We suggest that the histogram be split by the type of transport, a categorical variable. This can be done by creating a stacked histogram, with four different colors indicating the four different types of transportation. The vertical axis would represent the daily average ridership and the horizontal would represent the years. One advantage of this plot is that we can visualize the distribution of each type of transport across the years, as well as the total ridership.
+
+
+# Exercise 5
+
+No we cannot because there are overlaps in the data: i.e. a person may have taken both the MRT and LRT in a single day. These overlaps prevent us from summing up the values across the different types of transport to determine the daily average ridership of the entire public transport system.
+
