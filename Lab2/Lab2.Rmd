@@ -7,13 +7,19 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+## Load CSV
+
 ```{r}
 data <- read.csv("diabetes_lab2.csv")
 ```
 
+## Exercise 1: Create scatterplot matrix.
+
 ```{r, fig.width=10, fig.height=10}
 plot(data)
 ```
+
+## Exercise 2: Linear Regression Model with y against age.
 
 ```{r}
 plot(data$age, data$y)
