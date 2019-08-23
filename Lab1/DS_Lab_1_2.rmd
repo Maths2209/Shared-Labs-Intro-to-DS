@@ -1,0 +1,120 @@
+---
+title: "Introduction to Data Science: Lab 1"
+author: "Team 4: Dion, Julie, Mia, Vincent"
+submitting_for_team: 4 (Dion, Julie, Mia, Vincent)
+date: "8/23/2019"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(ggplot2)
+library(naniar)
+library(dplyr)
+```
+
+# Exercise 1
+*Read in the data which is posted as a CSV file on Canvas as part of this lab’s assignment. The file was downloaded from Data.gov.sg.*
+
+```{r message = FALSE}
+transport <- read_csv("public-transport-utilisation-average-public-transport-ridership.csv")
+```
+
+
+# Exercise 2
+*Give a textual description of the data, including what years they cover and what is recorded in this dataset. Be precise and clear in your wording such that someone who does not have access to the dataset understands its contents. As in any lab exercise, include the R code and R output that constitute your answer if you use any R.*
+
+```{r}
+summary(transport)
+unique(transport$year[order(transport$year)])
+unique(transport$type_of_public_transport)
+unique(transport$average_ridership[order(transport$average_ridership)])
+```
+
+The dataset consists of three columns: the year of public transport usage, the type of public transport used and the average public transport ridership by year. It has 88 rows and includes data from 1995 to 2016, with four different types of public transport (MRT, LRT, bus, taxi), and average ridership ranging from 0 to 3,939,000.
+
+
+# Exercise 3
+*In what year was the LRT opened? Base your answer on the data and show your code that obtained the answer.*
+
+```{r}
+min(transport$year[transport$type_of_public_transport == "LRT" & transport$average_ridership != 0])
+```
+
+The LRT opened in the year 1999.
+
+
+# Exercise 4
+*Plot a histogram of the average daily ridership numbers. Is the distribution unimodal? Can you explain this from the context or meaning of the data? Do you have suggestions for a more insightful visual representation of this variable?*
+
+```{r}
+hist(transport$average_ridership / 365, main = "Histogram of average daily ridership", xlab = "Average daily ridership")
+```
+
+The distribution of the average daily ridership is not unimodal. The data is skewed by the large number of '0' values, which may reflect incomplete records, for example, the average ridership values for taxis from 1995-2000 reflect '0', when taxis were actually in operation. This suggests that the data is 'dirty data'. 
+
+
+We suggest that the histogram be split by the type of transport, a categorical variable. This can be done by creating a stacked histogram, with four different colors indicating the four different types of transportation. The vertical and horizontal axes would remain the same. One advantage of this plot is that we can visualize the distribution of each type of transport, as well as the total ridership.
+
+
+# Exercise 5
+*Can you compute the daily average ridership of Singapore’s public transit system based on this data set alone? If yes, please do so for 2016. If not, explain why not.*
+
+
+No we cannot because there are overlaps in the data: i.e. a person may have taken both the MRT and LRT in a single day. These overlaps prevent us from summing up the values across the different types of transport to determine the daily average ridership of the entire public transport system.
+
+
+# Exercise 6
+*Recreate the line plot shown on https://data.gov.sg/dataset/public-transport-utilisation-average-public-transport-ridership. You do not need to worry about the dots, colors, or legend.*
+
+```{r}
+ggplot(transport, aes(x=year, y=average_ridership, group=type_of_public_transport)) +
+  geom_line(aes(color=type_of_public_transport))+
+  geom_point(aes(color=type_of_public_transport))
+```
+
+
+# Exercise 7
+*Excluding changes where the ridership in the data started at zero: In what year and for what type of transport was the largest absolute increase in ridership observed in the data? In what year and for what type of transport was the largest relative increase in ridership observed in the data?*
+
+## Relative Increase
+```{r}
+transport2 = subset(transport, transport$average_ridership != 0)
+transport2 <- transport2 %>%
+  group_by(type_of_public_transport) %>% 
+  arrange(year, .by_group = TRUE) %>%
+  mutate(pct_change =  ((average_ridership-lag(average_ridership))/lag(average_ridership) * 100))
+transport2 <- transport2[!is.na(transport2$pct_change),]
+
+RelativeIncrease <- ggplot(transport2, aes(x=year, y=pct_change, group=type_of_public_transport)) +
+  geom_line(aes(color=type_of_public_transport)) +
+  geom_point(aes(color=type_of_public_transport)) + 
+  ggtitle("Relative Change of Avg. Yearly Ridership \nby Year (Excluding Zeros)")
+RelativeIncrease
+summary(transport2$pct_change)
+```
+
+The largest relative increase is the LRT system, from 1999-2000, with a 44% increase in riders from the previous year. 
+
+## Absolute Increase
+
+```{r}
+transport3 <- transport2 %>%
+  group_by(type_of_public_transport) %>% 
+  arrange(year, .by_group = TRUE) %>%
+  mutate(abs_change = (average_ridership-lag(average_ridership)))
+transport3 <- transport3[!is.na(transport3$abs_change),]
+
+AbsIncrease <- ggplot(transport3, aes(x=year, y=abs_change, group=type_of_public_transport)) +
+  geom_line(aes(color=type_of_public_transport)) +
+  geom_point(aes(color=type_of_public_transport)) +
+  ggtitle("Absolute Change of Avg. Yearly Ridership \nby Year (Excluding Zeros)")
+AbsIncrease
+summary(transport3$abs_change)
+```
+
+The largest absolute increase is the MRT system, from 2009-2010, with an increase of 287000 riders from the previous year. 
+
+

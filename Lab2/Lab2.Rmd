@@ -1,0 +1,23 @@
+---
+title: "Lab2"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+data <- read.csv("diabetes_lab2.csv")
+```
+
+```{r, fig.width=10, fig.height=10}
+plot(data)
+```
+
+```{r}
+plot(data$age, data$y)
+abline(lm(data$y~data$age), col="blue", lwd = 2)
+summary(lm(data$y~data$age))
+```
+
