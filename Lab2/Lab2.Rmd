@@ -19,11 +19,53 @@ data <- read.csv("diabetes_lab2.csv")
 plot(data)
 ```
 
-## Exercise 2: Linear Regression Model with y against age.
+Based on the plots above, the relation between y and bmi or map seems linear. The plot of y against age shows dispersed and scattered points with no clear indication of linearity between these two variables. Also, there is no observed effect on y based on gender. 
+
+## Exercise 2: Linear regression model with y against age.
 
 ```{r}
 plot(data$age, data$y)
 abline(lm(data$y~data$age), col="blue", lwd = 2)
 summary(lm(data$y~data$age))
 ```
+
+Slope is 304.183, and it means that for every one standard deviation increase in age, the outcome y increases by 304.183.
+
+## Exercise 3: Hypothesis test for age coefficient.
+
+```{r}
+summary(lm(data$y~data$age))
+```
+
+Null hypothesis: slope for age is zero.  
+Alternate hypothesis: slope for age is not zero. 
+
+Using the t-distribution, the hypothesis test result is based on the standard error given next to the slope. The p-value is 7.06e-05. Assuming 95% significance level, the p-value is extremely small (smaller than 0.05). Hence, we reject the null hypothesis and conclude that the slope for age is not zero.
+
+
+## Exercise 4: Linear regression model with y against all other variables.
+```{r}
+summary(lm(data$y~data$age + data$sex + data$bmi + data$map))
+```
+
+Multiple R-squared of this model fit is 0.4003, which is much greater than the that of model fit from Exercise 2 which is 0.0353. This makes sense as generally adding more variables to the model can increase the R-squared value. 
+
+## Exercise 5: Hypothesis test changes.
+
+Based on the model fit for exercise 4, the p-value on the slope for age changes to 0.562. Assuming 95% significance level, the p-value is way greater than the alpha level of 0.05. Hence, we cannot reject the null hypothesis and conclude that the slope for age is zero (i.e age does not have an effect on outcome y).
+
+If we look at scatterplot matrix from exercise 1, it can be seen from the plots of y against bmi or map, there is some sort of positive linear relation between the variables respectively while the same cannot be said for y against age. By including bmi and map as predictors, more of the outcome y can be explained by bmi or map that shows a stronger a correlation anyway as compared to when only age is used as an independent variable. With the change in the best fit line due to adding the other variables (seen below), we can also visualize that as compared to the previous model it does not age has no effect on y. 
+
+```{r}
+plot(data$age, data$y)
+abline(lm(data$y~data$age), col="blue", lwd = 2)
+abline(lm(data$y~data$age + data$sex + data$bmi + data$map), col="red", lwd = 2)
+```
+
+
+## Exercise 6: Slopes for age, BMI and mean arterial blood pressure.
+
+Their signs are all positive. They all seem to make sense, as we do know from common knowledge that as one gets older, or as one has a higher BMI or higher blood pressure, diabetes progresses to a larger extent as well. 
+
+
 
