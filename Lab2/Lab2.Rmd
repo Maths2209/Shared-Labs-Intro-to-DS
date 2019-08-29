@@ -1,5 +1,6 @@
 ---
 title: "Lab2"
+author: "Dion, Julie, Mia, Vincent"
 output: html_document
 ---
 
