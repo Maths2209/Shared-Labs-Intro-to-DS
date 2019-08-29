@@ -1,0 +1,72 @@
+---
+title: "Lab2"
+author: "Dion, Julie, Mia, Vincent"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load CSV
+
+```{r fig.width=10, fig.height=10}
+data <- read.csv("diabetes_lab2.csv")
+```
+
+# Exercise 1: Create scatterplot matrix.
+
+```{r, fig.width=10, fig.height=10}
+plot(data)
+```
+
+Based on the plots above, the relation between y and bmi or map seem linear. The plot of y against age shows dispersed and scattered points with no clear indication of linearity between these two variables. From the graph we also cannot observe any clear relation between sex and y. In any case, since sex is a dummy variable, even if a relation can be observed between sex and y, we cannot tell if it is linear.
+
+# Exercise 2: Linear regression model with y against age.
+
+```{r}
+plot(data$age, data$y)
+abline(lm(data$y~data$age), col="blue", lwd = 2)
+summary(lm(data$y~data$age))
+```
+
+The slope is 304.183; this means that if age is increased by 1 standard deviation, the outcome y is predicted to increase by 304.183. Outcome y is the quantitative measure of disease (diabetes) progression one year after baseline.
+
+# Exercise 3: Hypothesis test for age coefficient.
+
+```{r}
+summary(lm(data$y~data$age))
+```
+
+Null hypothesis: slope for age is zero.  
+Alternate hypothesis: slope for age is not zero. 
+
+To perform the hypothesis test, we can look at the p-value for the slope for age given in the output of `summary(lm(data$y~data$age))`. As shown in the output above, the p-value ("Pr(>|t|)") for the slope for age is 7.06e-05. If we set the significance level to be 0.05, as 7.06e-05 < 0.05, we reject the null hypothesis in favor of the alternative hypothesis. Therefore, we conclude that the slope for age is not equal to zero. This means that the variable age is correlated to the outcome y.
+
+
+# Exercise 4: Linear regression model with y against all other variables.
+```{r}
+summary(lm(data$y~data$age + data$sex + data$bmi + data$map))
+```
+
+Multiple R-squared of this model fit is 0.4003, which is much greater than the that of model fit from Exercise 2 which is 0.0353. This makes sense because when we add more variables that explain the outcome y to the model, we would expect the model to better fit the data. The model's goodness-of-fit is represented by the R-squared value.
+
+# Exercise 5: Hypothesis test changes.
+
+Based on the model fit for Exercise 4, the p-value on the slope for age changes to 0.562. Using 0.05 as the significance level, the p-value is much greater than alpha (i.e. 0.562 > 0.05). Hence, using the model fit for Exercise 4, we fail to reject the null hypothesis and conclude that the slope for age is zero (i.e age does not have an effect on outcome y).
+
+If we look at scatterplot matrix from Exercise 1, it can be seen from the plots of y against bmi or map that there is some positive linear relationship between the variables respectively, while for y against age, we cannot be certain of a linear relationship between y and age. By including bmi and map as predictors, more of the outcome y can be explained by bmi and map, which individually also show a stronger a positive linear relationship with y as compared to age. With the change in the best fit line due to adding the other variables (seen below), we can also visualize that as compared to the previous model, age has no effect on y. 
+
+```{r}
+plot(data$age, data$y)
+abline(lm(data$y ~ data$age), col="blue", lwd = 2)
+abline(lm(data$y ~ data$age + data$sex + data$bmi + data$map), col="red", lwd = 2)
+```
+
+
+# Exercise 6: Slopes for age, BMI and mean arterial blood pressure.
+
+Their signs are all positive. They all seem to make sense, as we do know from common knowledge that as one gets older, or as one has a higher BMI or higher blood pressure, diabetes progresses to a larger extent as well. 
+
+
+
