@@ -75,8 +75,9 @@ We want our model to have an AUC which is close to 1 as that indicates a low fal
 *Fit a logistic regression with SeriousDlqin2yrs as dependent variable and as predictor all other variables in the dataset. Plot the ROC curve and compute the AUC. How do the ROC curve and AUC compare to the results from Exercise 6? Was this to be expected? Why or why not?*
 
 ```{r}
-logit_all<-glm(SeriousDlqin2yrs~., data = data, family=binomial)
-data_withprob2<-data
+data_withoutX <- subset(data, select = -X)
+logit_all<-glm(SeriousDlqin2yrs~., data = data_withoutX, family=binomial)
+data_withprob2<-data_withoutX
 data_withprob2$PredictedProbability<-predict(logit_all, type="response")
 predObj = prediction(data_withprob2$PredictedProbability, data_withprob$SeriousDlqin2yrs)
 rocObj = performance(predObj, measure="tpr", x.measure="fpr")
