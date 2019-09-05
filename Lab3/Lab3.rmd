@@ -37,7 +37,7 @@ summary(logit)
 
 For every increase in the monthly income of a person by 1 unit, the log-odds decreases by 4.541e-05, where the probability is that of a person experiencing financial distress in the next two years. 
 
-The negative sign indicates that a person with a greater monthly income will have a lower probability of experiencing the financial distress of experiencing 90 days past due delinquency or worse. The negative sign is expected and makes intuitive sense.
+The negative sign indicates that a person with a greater monthly income will have a lower probability of experiencing financial distress in the next two years. The negative sign is expected and makes intuitive sense.
 
 # Exercise 4
 *Consider the model fit from Exercise 3. Create a side-by-side boxplot of the predicted probabilities seperated out by whether the person actually had a serious delinquency (SeriousDlqin2yrs==1) or not. What do you think of the usefulness of this model fit to determine credit worthiness?*
@@ -48,7 +48,7 @@ data_withprob$PredictedProbability <- predict(logit, type="response")
 boxplot(data_withprob$PredictedProbability ~ data_withprob$SeriousDlqin2yrs)
 ```
 
-The two box plots are very similar which indicates a massive overlap in the distribution of probabilities for those who had a serious delinquency and those who did not. The median for the group of people who experienced 90 days past due delinquency or worse have a slightly higher median and interquartile range, but this difference is not clear just from these boxplots. Therefore, the model is not very useful as it does not distinguish well between the two groups which makes it likely that it will misclassify many people.
+The two box plots are very similar which indicates a massive overlap in the distribution of probabilities for those who had a serious delinquency and those who did not. The median for the group of people who had a serious delinquency have a slightly higher median and interquartile range, but this difference is not very clear from these boxplots. Therefore, the model is not very useful as it does not distinguish well between the two groups which makes it likely that it will misclassify many people.
 
 # Exercise 5
 *Consider the side-by-side boxplots from Exercise 4. Define SeriousDlqin2yrs == 1 as a positive. Using a probability threshold of 0.5 for classification, how many true positives would you get? How many false positives would you get? How many true negatives will you get? How many false negatives will you get?*
@@ -73,10 +73,9 @@ rocObj = performance(predObj, measure="tpr", x.measure="fpr")
 aucObj = performance(predObj, measure="auc")
 plot(rocObj, main = paste("Area under the curve:",
 round(aucObj@y.values[[1]] ,4)))
-abline(0,1, col = "red")
 ```
 
-We want our model to have an AUC which is close to 1 as that indicates a low false positive rate and a high true positive rate. The model we have however, has an AUC 0.576 which is very far from 1 and closer to 0.5, which would be the AUC for random guessing. This supports our belief that the model is not useful. In fact, the ROC curve we attain is quite similar to the line y=x (in red) which indicates that the model's predictions are not much better than predictions made from coin flips.
+We want our model to have an AUC which is close to 1 as that indicates that there exist probability thresholds which allow for good classification: low false positive rate and high true positive rate. The model we have however, has an AUC of 0.576 which is very far from 1 and closer to 0.5, which is the expected AUC if we had used coin flips to decide the classification. This supports our belief that the model is not useful.
 
 # Exercise 7
 *Fit a logistic regression with SeriousDlqin2yrs as dependent variable and as predictor all other variables in the dataset. Plot the ROC curve and compute the AUC. How do the ROC curve and AUC compare to the results from Exercise 6? Was this to be expected? Why or why not?*
@@ -94,14 +93,11 @@ rocObj = performance(predObj, measure="tpr", x.measure="fpr")
 aucObj = performance(predObj, measure="auc")
 plot(rocObj, main = paste("Area under the curve:",
                           round(aucObj@y.values[[1]] ,4)))
-abline(0,1, col = "red")
 ```
 
-The ROC curve is now much further above the line y=x (in red) and the AUC is now 0.6912 which is greater than the original 0.576 and closer to 1. These indicate that the model is making better predictions of the outcome than before. This is to be expected since the model is drawing upon more data to make its predictions (since we added more predictors). The increase in the AUC indicates that the additional predictors indeed play a role in determining the outcome. 
+The AUC is now 0.6912 which is greater than the original 0.576 and closer to 1. This indicates that the model can now be used to make better classifications. This is to be expected since the model is drawing upon more data to decide on the classifications (since we added more predictors). The increase in the AUC indicates that the additional predictors are indeed correlated to the outcome.
 
 # Exercise 8
 *In linear regression, the coefficients are determined by minimizing the sum of the squared residuals. Give a conceptual description of how the coefficients are determined for the logistic regression fit from the previous exercise.*
 
-The coefficients for the logistic regression fit are determined by the maximum likelihood estimation (MLE) method. The MLE method finds the coefficient for each predictor, under which the observed y outcome are most likely. We use the log-likelihood function to determine the coefficient values that maximize it. 
-
-
+To determine the coefficients for the logistic regression fit in an analogous method to the least squares method is to use the Maximum Likelihood Estimation (MLE) method. Define a likelihood function (usually a Gaussian) that takes the coefficients of the logistic regression model, $\vec{w}$, and the predictors, $\vec{x_n}$, as some of its paramaters and outputs the probability that an event, $t_n$, otherwise known as ground truth, is observed. Suppose that the events are independent, then we can multiply the probability functions together to get a function which tells us the probability that we made the observations, $\vec{t}$, given $\vec{w}$, a matrix of predictors, $X$, and other parameters like the variance, $\sigma^2$. Finally, we maximise the all-data-likelihood function, or more usually the log of the function (the result is the same), with respect to $\vec{w}$. The optimal $\vec{w}$, often denoted $\vec{w}^*$, are the coefficients we use for the logistic regression fit. Other, arguably better, methods are the Maximum A Posteriori estimation (MAP) and the Full Bayesian method.
