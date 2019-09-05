@@ -48,7 +48,7 @@ data_withprob$PredictedProbability <- predict(logit, type="response")
 boxplot(data_withprob$PredictedProbability ~ data_withprob$SeriousDlqin2yrs)
 ```
 
-The model is not useful because the left and right boxplots both show a massive number of outliers in the predicted probability which indicates that we will attain many false positives and false negatives respectively.
+The two box plots are very similar which indicates a massive overlap in the distribution of probabilities for those who had a serious delinquency and those who did not. Therefore, the model is not very useful as it does not distinguish well between the two groups which makes it likely that it will misclassify many people.
 
 # Exercise 5
 *Consider the side-by-side boxplots from Exercise 4. Define SeriousDlqin2yrs == 1 as a positive. Using a probability threshold of 0.5 for classification, how many true positives would you get? How many false positives would you get? How many true negatives will you get? How many false negatives will you get?*
@@ -58,7 +58,7 @@ all(data_withprob$PredictedProbability<0.5)
 summary(data$SeriousDlqin2yrs == 1)
 ```
 
-Since the predicted probability is less than the probability threshold of 0.5 for every person, every person is predicted to not experience financial distress in the next two years. Since we have 0 positives, we have 0 true or false positives. We have 8357 false negatives, which are simply the negatives in the dataset, and we have 111912 true negatives, which are the positives in the dataset.
+Since the predicted probability is less than the probability threshold of 0.5 for every person, every person is predicted to not experience financial distress in the next two years. Since we have 0 positives, we have 0 true or false positives. We have 8357 false negatives, which are simply the 1s in the dataset, and we have 111912 true negatives, which are the 0s in the dataset.
 
 # Exercise 6
 *Plot the ROC curve of the model fit from Exercise 4 and compute the corresponding area under the curve (AUC). Do these results support the answer that you give in Exercise 4 to the question “What do you think of the usefulness of this model fit to determine credit worthiness?” Please explain why or why not.*
@@ -85,6 +85,10 @@ We want our model to have an AUC which is close to 1 as that indicates a low fal
 logit_all <- glm(SeriousDlqin2yrs ~ ., data = data, family=binomial)
 data_withprob2 <- data
 data_withprob2$PredictedProbability <- predict(logit_all, type="response")
+data_withoutX <- subset(data, select = -X)
+logit_all<-glm(SeriousDlqin2yrs~., data = data_withoutX, family=binomial)
+data_withprob2<-data_withoutX
+data_withprob2$PredictedProbability<-predict(logit_all, type="response")
 predObj = prediction(data_withprob2$PredictedProbability, data_withprob$SeriousDlqin2yrs)
 rocObj = performance(predObj, measure="tpr", x.measure="fpr")
 aucObj = performance(predObj, measure="auc")
