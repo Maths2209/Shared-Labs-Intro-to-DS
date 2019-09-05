@@ -37,7 +37,7 @@ summary(logit)
 
 For every increase in the monthly income of a person by 1 unit, the log-odds decreases by 4.541e-05, where the probability is that of a person experiencing financial distress in the next two years. 
 
-The negative sign indicates that a person with a greater monthly income will have a lower probability of experiencing financial distress in the next two years. The negative sign is expected and makes intuitive sense.
+The negative sign indicates that a person with a greater monthly income will have a lower probability of experiencing the financial distress of experiencing 90 days past due delinquency or worse. The negative sign is expected and makes intuitive sense.
 
 # Exercise 4
 *Consider the model fit from Exercise 3. Create a side-by-side boxplot of the predicted probabilities seperated out by whether the person actually had a serious delinquency (SeriousDlqin2yrs==1) or not. What do you think of the usefulness of this model fit to determine credit worthiness?*
@@ -48,7 +48,7 @@ data_withprob$PredictedProbability <- predict(logit, type="response")
 boxplot(data_withprob$PredictedProbability ~ data_withprob$SeriousDlqin2yrs)
 ```
 
-The two box plots are very similar which indicates a massive overlap in the distribution of probabilities for those who had a serious delinquency and those who did not. Therefore, the model is not very useful as it does not distinguish well between the two groups which makes it likely that it will misclassify many people.
+The two box plots are very similar which indicates a massive overlap in the distribution of probabilities for those who had a serious delinquency and those who did not. The median for the group of people who experienced 90 days past due delinquency or worse have a slightly higher median and interquartile range, but this difference is not clear just from these boxplots. Therefore, the model is not very useful as it does not distinguish well between the two groups which makes it likely that it will misclassify many people.
 
 # Exercise 5
 *Consider the side-by-side boxplots from Exercise 4. Define SeriousDlqin2yrs == 1 as a positive. Using a probability threshold of 0.5 for classification, how many true positives would you get? How many false positives would you get? How many true negatives will you get? How many false negatives will you get?*
@@ -76,7 +76,7 @@ round(aucObj@y.values[[1]] ,4)))
 abline(0,1, col = "red")
 ```
 
-We want our model to have an AUC which is close to 1 as that indicates a low false positive rate and a high true positive rate. The model we have however, has an AUC 0.576 which is very far from 1. This supports out belief that the model is not useful. In fact, the ROC curve we attain is quite similar to the line y=x (in red) which indicates that the model's predictions are not much better than predictions made from coin flips.
+We want our model to have an AUC which is close to 1 as that indicates a low false positive rate and a high true positive rate. The model we have however, has an AUC 0.576 which is very far from 1 and closer to 0.5, which would be the AUC for random guessing. This supports our belief that the model is not useful. In fact, the ROC curve we attain is quite similar to the line y=x (in red) which indicates that the model's predictions are not much better than predictions made from coin flips.
 
 # Exercise 7
 *Fit a logistic regression with SeriousDlqin2yrs as dependent variable and as predictor all other variables in the dataset. Plot the ROC curve and compute the AUC. How do the ROC curve and AUC compare to the results from Exercise 6? Was this to be expected? Why or why not?*
