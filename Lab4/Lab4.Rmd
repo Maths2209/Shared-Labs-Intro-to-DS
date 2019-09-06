@@ -1,0 +1,76 @@
+---
+title: "DS Lab 4"
+author: "Mia Raghavan, Julie Jung, Dion Ho, Vincent Fung"
+date: "9/13/2019"
+output: 
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+train <- read.csv("train.csv")
+```
+
+
+# Exercise 1
+
+*Do the values in count seem to be distributed according to a Poisson distribution?*
+
+
+# Exercise 2
+*Fit a poisson regression model with count as outcome and workingday as only predictor.*
+
+
+# Exercise 3
+*Interpret the slope from your poisson regression fit.*
+
+
+# Exercise 4
+*Is the slope practically significant?*
+
+
+# Exercise 5
+*Is the slope statistically significant?*
+
+
+# Exercise 6
+*Fit a negative binomial regression model with count as outcome and workingday as only predictor.*
+
+
+# Exercise 7
+*Does the interpretation of the slope change compared to the poisson regression fit?*
+
+
+# Exercise 8
+*Is the slope statistically significant?*
+
+
+# Exercise 9
+*What is a potential explanation for the difference in p-value obtained for the slope between poission regression and negative binomial regression?*
+
+
+# Exercise 10
+*Fit a negative binomial regression with count as outcome and temp, atemp, humidity, and workingday as predictors. Which variable(s) are not statistically significant? Can you provide an explanation for this based on the data context?*
+
+
+# Exercise 11
+*Interpret the coefficient for humidity.*
+
+
+# Exercise 12
+*Visualize count and atemp jointly such that one can inspect these data. The goal is to creat a figure that is easy to understand. It does not have to show every single data point.*
+
+
+
+
+
+
+
+
+
+
