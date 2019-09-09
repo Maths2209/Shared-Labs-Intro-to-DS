@@ -128,7 +128,9 @@ ggplot(train, aes(x = atemp, y = count)) +
     geom_point(alpha=1/15,position=position_jitter(h=0)) +
     theme_gray() 
 ```
+
 Finally, we overlay the chart with summary lines (black line depicts the mean while blue line depicts the median), for more intuitive grasp of the key trend of count across the range of atemp.
+
 ```{r}
 ggplot(train, aes(x = atemp, y = count)) +
     geom_point(alpha=1/15,position=position_jitter(h=0), color="red") +
