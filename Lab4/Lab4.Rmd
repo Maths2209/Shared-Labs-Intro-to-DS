@@ -108,20 +108,33 @@ Temp is not statistically significant.
 
 The coefficient for humidity is -0.014771. It means that for every one unit increase in humidity, count is multiplied by a factor of 0.9853376 times - that is, a 1.5% decrease.  
 
-```{r}
-exp(1)^-0.014771
-```
-
 
 # Exercise 12
 *Visualize count and atemp jointly such that one can inspect these data. The goal is to creat a figure that is easy to understand. It does not have to show every single data point.*
 
 
+We start with a very simple scatter plot between count and atemp. 
 
+```{r}
+library(ggplot2)
+ggplot(train, aes(x = atemp, y = count)) +
+    geom_jitter(alpha=1/20) +
+    theme_gray()
+```
+Since we don't have to see every single point, we add jitter and transparency to it for better visualization so that we now can see the density and relative distribution. 
 
-
-
-
+```{r}
+ggplot(train, aes(x = atemp, y = count)) +
+    geom_point(alpha=1/15,position=position_jitter(h=0)) +
+    theme_gray() 
+```
+Finally, we overlay the chart with summary lines (black line depicts the mean while blue line depicts the median), for more intuitive grasp of the key trend of count across the range of atemp.
+```{r}
+ggplot(train, aes(x = atemp, y = count)) +
+    geom_point(alpha=1/15,position=position_jitter(h=0), color="red") +
+    geom_line(stat='summary',fun.y=mean) +
+    geom_line(stat='summary',fun.y=median,linetype=2,color='blue') 
+```
 
 
 
