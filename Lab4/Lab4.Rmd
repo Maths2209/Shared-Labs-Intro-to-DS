@@ -1,6 +1,6 @@
 ---
 title: "DS Lab 4"
-author: "Mia Raghavan, Julie Jung, Dion Ho, Vincent Fung"
+author: "Mia Raghavan, Julie Jung, Dion Ho, Vincent Feng"
 date: "9/13/2019"
 output: 
     prettydoc::html_pretty:
@@ -21,45 +21,96 @@ train <- read.csv("train.csv")
 
 *Do the values in count seem to be distributed according to a Poisson distribution?*
 
+```{r}
+hist(train$count)
+```
+
+
 
 # Exercise 2
 *Fit a poisson regression model with count as outcome and workingday as only predictor.*
 
+```{r}
+
+train_po <- glm(count ~ workingday, family = "poisson", data = train)
+summary(train_po)
+
+```
+
 
 # Exercise 3
 *Interpret the slope from your poisson regression fit.*
+
+The slope is 0.023619 with regards workingday. That means, with one unit increase in the workingday, count is multiplied by a factor of e^0.023619, which is 1.0239.
 
 
 # Exercise 4
 *Is the slope practically significant?*
 
 
+```{r}
+summary(train)
+```
+
+The slope is not practically significant at all. As mentioned above, for every one unit increase in workingday, count increases by a factor of 1.0239. Workingday ranges from 0 to 1, and so for this range, the range of count as impacted by workingday is only 0 to 1.0239, which is almost negilibile compared the full range of count from 1-977. 
+
 # Exercise 5
 *Is the slope statistically significant?*
+
+The slope is statistically significant, as the p value is <2e-16, which is lower than the significance level 0.05, hence we reject the null hypothesis.
 
 
 # Exercise 6
 *Fit a negative binomial regression model with count as outcome and workingday as only predictor.*
 
+```{r}
+library(MASS)
+train_nb <- glm.nb(count ~ workingday, data = train)
+summary(train_nb)
+```
+
 
 # Exercise 7
 *Does the interpretation of the slope change compared to the poisson regression fit?*
+
+The slope is 0.0236. The interpretation for this slope is that, with a unit increase in workingday, count increases by a factor of 1.023881 times. The interpretation does not change much, since both poisson and negative binomial model have the same link function from the perspective of GLM. 
+
+```{r}
+exp(1)^0.0236
+```
+
 
 
 # Exercise 8
 *Is the slope statistically significant?*
 
+The slope is not statistically significant. Its p value is 0.29, which is greater than the set significance level of 0.05. We thus fail to reject the null hypothesis.   
 
 # Exercise 9
-*What is a potential explanation for the difference in p-value obtained for the slope between poission regression and negative binomial regression?*
+*What is a potential explanation for the difference in p-value obtained for the slope between poisson regression and negative binomial regression?*
 
+(not sure, will check in office hour)
+Negative binomial regression captures the overdispersion in the data better than poisson does. Capturing accurately the full extent of variability, the negative binomial model will  
 
 # Exercise 10
 *Fit a negative binomial regression with count as outcome and temp, atemp, humidity, and workingday as predictors. Which variable(s) are not statistically significant? Can you provide an explanation for this based on the data context?*
 
+```{r}
+library(MASS)
+train_nb2 <- glm.nb(count ~ workingday + temp + atemp + humidity, data = train)
+summary(train_nb2)
+```
+
+Temp is not statistically significant. 
 
 # Exercise 11
 *Interpret the coefficient for humidity.*
+
+The coefficient for humidity is -0.014771. It means that for every one unit increase in humidity, count is multiplied by a factor of 0.9853376 times - that is, a 1.5% decrease.  
+
+```{r}
+exp(1)^-0.014771
+```
 
 
 # Exercise 12
