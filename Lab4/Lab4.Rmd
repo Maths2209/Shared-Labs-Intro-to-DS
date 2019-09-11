@@ -25,7 +25,7 @@ train <- read.csv("train.csv")
 hist(train$count)
 ```
 
-
+The right-skewed histogram indicates that the values in count is distributed according to a Poisson distribution with a small $\sigma$ parameter.
 
 # Exercise 2
 *Fit a poisson regression model with count as outcome and workingday as only predictor.*
@@ -41,18 +41,28 @@ summary(train_po)
 # Exercise 3
 *Interpret the slope from your poisson regression fit.*
 
-The slope is 0.023619 with regards workingday. That means, with one unit increase in the workingday, count is multiplied by a factor of e^0.023619, which is 1.0239.
+The slope is 0.023619 with regard to workingday. That means, with every one unit increase in the workingday, count is predicted to be multiplied by a factor of $e^{0.023619} \approx 1.0239$.
 
 
 # Exercise 4
 *Is the slope practically significant?*
 
+Original answer:
 
 ```{r}
 summary(train)
 ```
+The slope is not practically significant. As stated in Q3, for every one unit increase in workingday, count increases by a factor of 1.0239. Workingday ranges from 0 to 1, and so for this range, the range of count as impacted by workingday is only 0 to 1.0239, which is almost negligable compared the full range of count from 1-977. 
 
-The slope is not practically significant at all. As mentioned above, for every one unit increase in workingday, count increases by a factor of 1.0239. Workingday ranges from 0 to 1, and so for this range, the range of count as impacted by workingday is only 0 to 1.0239, which is almost negilibile compared the full range of count from 1-977. 
+Dion's answer: 
+
+```{r}
+summary(train$count*0.0239 > 1)
+8184/length(train$count)
+900*0.0239
+```
+
+The slope is practically significant. For 75.2% of the data set, when count is predicted to increase by a factor of 1.0239 it is predicted to increase by at least 1 unit. When count is large, 900 for example, its predicted increase by a factor of 1.0239 is a predicted increase by 21.5 units.
 
 # Exercise 5
 *Is the slope statistically significant?*
@@ -73,13 +83,7 @@ summary(train_nb)
 # Exercise 7
 *Does the interpretation of the slope change compared to the poisson regression fit?*
 
-The slope is 0.0236. The interpretation for this slope is that, with a unit increase in workingday, count increases by a factor of 1.023881 times. The interpretation does not change much, since both poisson and negative binomial model have the same link function from the perspective of GLM. 
-
-```{r}
-exp(1)^0.0236
-```
-
-
+The slope is 0.0236, which is slightly different from the slope of 0.0239 from the poisson regression link. Nonetheless, the interpretation of the slope is the same since both the poisson and the negative binomial models are GLMs with the same link function.
 
 # Exercise 8
 *Is the slope statistically significant?*
@@ -106,7 +110,7 @@ Temp is not statistically significant.
 # Exercise 11
 *Interpret the coefficient for humidity.*
 
-The coefficient for humidity is -0.014771. It means that for every one unit increase in humidity, count is multiplied by a factor of 0.9853376 times - that is, a 1.5% decrease.  
+The coefficient for humidity is -0.014771. It means that for every one unit increase in humidity, count is multiplied by a factor of 0.9853376 times - that is, a 1.5% decrease.
 
 
 # Exercise 12
