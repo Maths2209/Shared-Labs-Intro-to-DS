@@ -25,7 +25,7 @@ train <- read.csv("train.csv")
 hist(train$count)
 ```
 
-The right-skewed histogram indicates that the values in count is distributed according to a Poisson distribution with a small $\sigma$ parameter.
+The right-skewed histogram indicates that the values in count are distributed according to a Poisson distribution with a small $\sigma$ parameter.
 
 # Exercise 2
 *Fit a poisson regression model with count as outcome and workingday as only predictor.*
@@ -43,6 +43,8 @@ summary(train_po)
 
 The slope is 0.023619 with regard to workingday. That means, with every one unit increase in the workingday, count is predicted to be multiplied by a factor of $e^{0.023619} \approx 1.0239$.
 
+Julie's answer: 
+The slope is 0.023619 with regard to workingday. That means, compared to a non-working day (weekend or holiday), count for a workingday is predicted to be multipled by a factor of $e^{0.023619} \approx 1.0239$.
 
 # Exercise 4
 *Is the slope practically significant?*
@@ -53,6 +55,18 @@ Original answer:
 summary(train)
 ```
 The slope is not practically significant. As stated in Q3, for every one unit increase in workingday, count increases by a factor of 1.0239. Workingday ranges from 0 to 1, and so for this range, the range of count as impacted by workingday is only 0 to 1.0239, which is almost negligable compared the full range of count from 1-977. 
+
+
+Julie's answer:
+
+```{r}
+summary(train$workingday)
+summary(train$count)
+```
+
+
+The slope is not practically significant. As stated in Q3, compared to a non-working day (weekend or holiday), count for a workingday is larger by a factor of 1.0239. Workingday ranges from 0 to 1, and so for this range, the range of count as impacted by workingday is only 0 to 1.0239, which is almost negligible compared the full range of count from 1 to 977. For example, for the mean count of `r mean(train$count)`, an increase by a factor of 1.0239 would increase the count by `r mean(train$count)*(0.0239)` units, which is not a practically significant addition to `r mean(train$count)`.
+
 
 Dion's answer: 
 
@@ -88,7 +102,7 @@ The slope is 0.0236, which is slightly different from the slope of 0.0239 from t
 # Exercise 8
 *Is the slope statistically significant?*
 
-The slope is not statistically significant. Its p value is 0.29, which is greater than the set significance level of 0.05. We thus fail to reject the null hypothesis.   
+The slope is not statistically significant. Its p-value is 0.29, which is greater than the set significance level of 0.05. We thus fail to reject the null hypothesis.   
 
 # Exercise 9
 *What is a potential explanation for the difference in p-value obtained for the slope between poisson regression and negative binomial regression?*
@@ -105,12 +119,12 @@ train_nb2 <- glm.nb(count ~ workingday + temp + atemp + humidity, data = train)
 summary(train_nb2)
 ```
 
-Temp is not statistically significant. 
+Temp, the variable representing the temperature in Celcius, is not statistically significant. This may be the case because bike riders are more sensitive to what the temperature "feels like" rather than the actual temperature. This information is captured in the variable atemp.
 
 # Exercise 11
 *Interpret the coefficient for humidity.*
 
-The coefficient for humidity is -0.014771. It means that for every one unit increase in humidity, count is multiplied by a factor of 0.9853376 times - that is, a 1.5% decrease.
+The coefficient for humidity is -0.014771. It means that for every one unit increase in humidity, count is multiplied by a factor of 0.9853376 - that is, a 1.5% decrease.
 
 
 # Exercise 12
