@@ -72,7 +72,7 @@ summary(train_nb)
 # Exercise 7
 *Does the interpretation of the slope change compared to the poisson regression fit?*
 
-The slope is 0.0236, which is slightly different from the slope of 0.0239 from the poisson regression link. Nonetheless, the interpretation of the slope is the same since both the poisson and the negative binomial models are GLMs with the same link function.
+The slope is 0.02362, which is slightly different from the slope of 0.023619 from the poisson regression link. Nonetheless, the interpretation of the slope is the same since both the poisson and the negative binomial models are GLMs with the same link function.
 
 # Exercise 8
 *Is the slope statistically significant?*
