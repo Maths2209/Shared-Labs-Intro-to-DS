@@ -41,42 +41,17 @@ summary(train_po)
 # Exercise 3
 *Interpret the slope from your poisson regression fit.*
 
-The slope is 0.023619 with regard to workingday. That means, with every one unit increase in the workingday, count is predicted to be multiplied by a factor of $e^{0.023619} \approx 1.0239$.
-
-Julie's answer: 
 The slope is 0.023619 with regard to workingday. That means, compared to a non-working day (weekend or holiday), count for a workingday is predicted to be multipled by a factor of $e^{0.023619} \approx 1.0239$.
 
 # Exercise 4
 *Is the slope practically significant?*
-
-Original answer:
-
-```{r}
-summary(train)
-```
-The slope is not practically significant. As stated in Q3, for every one unit increase in workingday, count increases by a factor of 1.0239. Workingday ranges from 0 to 1, and so for this range, the range of count as impacted by workingday is only 0 to 1.0239, which is almost negligable compared the full range of count from 1-977. 
-
-
-Julie's answer:
 
 ```{r}
 summary(train$workingday)
 summary(train$count)
 ```
 
-
 The slope is not practically significant. As stated in Q3, compared to a non-working day (weekend or holiday), count for a workingday is larger by a factor of 1.0239. Workingday ranges from 0 to 1, and so for this range, the range of count as impacted by workingday is only 0 to 1.0239, which is almost negligible compared the full range of count from 1 to 977. For example, for the mean count of `r mean(train$count)`, an increase by a factor of 1.0239 would increase the count by `r mean(train$count)*(0.0239)` units, which is not a practically significant addition to `r mean(train$count)`.
-
-
-Dion's answer: 
-
-```{r}
-summary(train$count*0.0239 > 1)
-8184/length(train$count)
-900*0.0239
-```
-
-The slope is practically significant. For 75.2% of the data set, when count is predicted to increase by a factor of 1.0239 it is predicted to increase by at least 1 unit. When count is large, 900 for example, its predicted increase by a factor of 1.0239 is a predicted increase by 21.5 units.
 
 # Exercise 5
 *Is the slope statistically significant?*
@@ -130,7 +105,6 @@ The coefficient for humidity is -0.014771. It means that for every one unit incr
 # Exercise 12
 *Visualize count and atemp jointly such that one can inspect these data. The goal is to creat a figure that is easy to understand. It does not have to show every single data point.*
 
-
 We start with a very simple scatter plot between count and atemp. 
 
 ```{r}
@@ -139,7 +113,8 @@ ggplot(train, aes(x = atemp, y = count)) +
     geom_jitter(alpha=1/20) +
     theme_gray()
 ```
-Since we don't have to see every single point, we add jitter and transparency to it for better visualization so that we now can see the density and relative distribution. 
+
+Since we don't have to see every single point, we add jitter and transparency to it so that we can better see the density and relative distribution. 
 
 ```{r}
 ggplot(train, aes(x = atemp, y = count)) +
@@ -152,8 +127,8 @@ Finally, we overlay the chart with summary lines (black line depicts the mean wh
 ```{r}
 ggplot(train, aes(x = atemp, y = count)) +
     geom_point(alpha=1/15,position=position_jitter(h=0), color="red") +
-    geom_line(stat='summary',fun.y=mean) +
-    geom_line(stat='summary',fun.y=median,linetype=2,color='blue') 
+    geom_line(stat='summary',fun.y=mean, size = 2) +
+    geom_line(stat='summary',fun.y=median,linetype=2,color='blue', size = 2) 
 ```
 
 
