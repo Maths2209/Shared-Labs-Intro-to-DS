@@ -34,7 +34,6 @@ The right-skewed histogram indicates that the values in count are distributed ac
 
 train_po <- glm(count ~ workingday, family = "poisson", data = train)
 summary(train_po)
-
 ```
 
 
@@ -82,8 +81,7 @@ The slope is not statistically significant. Its p-value is 0.29, which is greate
 # Exercise 9
 *What is a potential explanation for the difference in p-value obtained for the slope between poisson regression and negative binomial regression?*
 
-(not sure, will check in office hour)
-Negative binomial regression captures the overdispersion in the data better than poisson does. Capturing accurately the full extent of variability, the negative binomial model will  
+Negative binomial regression captures the overdispersion in the data better than poisson does. It captures more accurately the full extent of the variability, which is usually larger than the variability captured in a poisson distribution, the negative binomial model will reflect greater uncertainty in the best-fit line and therefore the p-value is higher.
 
 # Exercise 10
 *Fit a negative binomial regression with count as outcome and temp, atemp, humidity, and workingday as predictors. Which variable(s) are not statistically significant? Can you provide an explanation for this based on the data context?*
