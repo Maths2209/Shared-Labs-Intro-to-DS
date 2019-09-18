@@ -1,0 +1,137 @@
+---
+title: "Week 5 LAB"
+authors: Mia Raghavan, Julie, 
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(readr)
+library(rsq)
+
+####EXERCISE 1: Consider logistic regression with target as the outcome. Perform backward elimination based on p-values using a significance level of 0.001 to obtain a parsimonious model for the presence of heart disease.
+
+heart <- read.csv('Lab5.csv',header=T,na.strings=c(""))
+model <- glm(formula = heart$target ~ heart$age + heart$sex + heart$trestbps + heart$chol + heart$fbs + heart$thalach + heart$exang, family = binomial (link = "logit"))
+
+print(summary(model))
+```
+Currently, the FBS predictor has the highest p-value of 0.6281. Using backward elimination, this predictor will be dropped in the next iteration of the model (model2)
+```{r}
+########### REMOVE FBS
+
+model2 <- glm(formula = heart$target ~ heart$age + heart$sex + heart$trestbps + heart$chol + heart$thalach + heart$exang, family = binomial(link = "logit"))
+
+print(summary(model2))
+
+```
+The next predictor with the highest p-value appears to be age, with a p-value of 0.4069. This will also be dropped from the model. 
+
+```{r}
+################# REMOVE TRESTBPS
+
+model3 <- glm(formula = heart$target ~  + heart$sex + heart$age + 
+    heart$chol + heart$thalach + heart$exang, family = binomial(link = "logit"))
+
+print(summary(model3))
+
+```
+At this point, AGE seems to have the highest p-value and will be dropped. 
+
+```{r}
+############ REMOVE AGE
+model4 <- glm(formula = heart$target ~  + heart$sex  + 
+    heart$chol + heart$thalach + heart$exang, family = binomial(link = "logit"))
+
+print(summary(model4))
+```
+At this point, CHOL seems to have the highest p-value and will be dropped. 
+
+```{r}
+########## DROP CHOL
+model5 <- glm(formula = heart$target ~  + heart$sex  + 
+    + heart$thalach + heart$exang, family = binomial(link = "logit"))
+
+print(summary(model5))
+
+```
+#Excerise 2: Interpret the coefficient with the smallest p-value in the final model fit from Exercise 1. Make sure your interpretation is in context and explains the respective predictor.
+
+In the final model, the predictor with the smalled p-value is the thalach predictor. This means that the thalach predictor is the most statistically significant predictor, and demonstrates that with each one unit increase in the target, there is a -1.564 decrease in the exang predictor. 
+
+# Exercise 4. Repeat Exercise 1 but now with forward selection rather than backward elimination. Again use a significance level of 0.001
+
+```{r}
+modelA <- glm(formula = heart$target ~ heart$age)
+print("Model A(Age): ")
+print(rsq(modelA,data=heart))
+
+modelB <- glm(formula = heart$target ~ heart$thalach)
+print("Model B(Thalach): ")
+print(rsq(modelB,data=heart))
+
+
+modelC <- glm(formula = heart$target ~ heart$exang)
+rsq(modelC,adj=TRUE,data=heart)
+print("Model C(Exang): ")
+print(rsq(modelC,data=heart))
+
+modelD <- glm(formula = heart$target ~ heart$sex)
+print("Model D(Sex): ")
+print(rsq(modelD,data=heart))
+
+```
+The model with one predictor that has the largest adjusted R2 is the model with the thalach predictor, and because this adjusted R2 is larger than the adjusted R2 from the model with no predictors (Radj 2 = 0), it will be added to our model.
+
+```{r}
+modelE <- glm(formula = heart$target ~ heart$exang)
+print("Baseline Model (Exang): ")
+print(rsq(modelD,data=heart))
+
+modelF <- glm(formula = heart$target ~ heart$exang + heart$thalach)
+print("Model F:Exang + Thalach: ")
+print(rsq(modelF,data=heart))
+
+modelG <- glm(formula = heart$target ~ heart$exang + heart$sex)
+print("Model G: Exang + Sex: ")
+print(rsq(modelG,data=heart))
+
+modelH <- glm(formula = heart$target ~ heart$exang + heart$age)
+print("Model H: Exang + Age: ")
+print(rsq(modelH,data=heart))
+
+modelI <- glm(formula = heart$target ~ heart$exang + heart$thalach)
+print("Model F:Exang + Thalach: ")
+print(rsq(modelF,data=heart))
+
+modelJ <- glm(formula = heart$target ~ heart$exang + heart$fbs)
+print("Model G: Exang + FBS: ")
+print(rsq(modelG,data=heart))
+
+modelK <- glm(formula = heart$target ~ heart$exang + heart$trestbps)
+print("Model H: Exang + TrestBPS: ")
+print(rsq(modelH,data=heart))
+```
+All models that are attached to the Exang predictor (Thalach, Sex, Age) all have lesser adjusted Rsquared values compared to the baseline Rsquared model, indicated they should not be part of the model.  Therefore, the most useful predictor for this model is Exang.
+
+#Exercise 5: Are your final models from Exercises 1 and 4 the same? Are the final models from forward selection and backward elimination always the same? Please explain.
+
+The results differ from the original backward selection model. There is no guarantee that backward elimination and forward selection will arrive at the same final model.
+
+```{r}
+print("Backward Elimination:  ")
+print(rsq(model5,data=heart))
+
+modelE <- glm(formula = heart$target ~ heart$exang)
+print("Forward Selection (Exang): ")
+```
+
+
+```{r}
+```
+As the Forward Selection model has the highest adjusted R-squared value, it should be used instead of the backward elimination model. 
