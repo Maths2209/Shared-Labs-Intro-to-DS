@@ -97,7 +97,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <section class="page-header">
 <h1 class="title toc-ignore project-name">Lab5</h1>
 <h4 class="author project-author">Dion, Julie, Mia, Vincent</h4>
-<h4 class="date project-date">9/13/2019</h4>
+<h4 class="date project-date">9/20/2019</h4>
 </section>
 
 
@@ -108,7 +108,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">heart &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">'Lab_5_heart.csv'</span>,<span class="dt">header=</span>T,<span class="dt">na.strings=</span><span class="kw">c</span>(<span class="st">&quot;&quot;</span>))
 model &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>age <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>sex <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>trestbps <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>chol <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>fbs <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>exang, <span class="dt">family =</span> <span class="kw">binomial</span> (<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
 
-<span class="kw">print</span>(<span class="kw">summary</span>(model))</code></pre></div>
+<span class="kw">summary</span>(model)</code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = heart$target ~ heart$age + heart$sex + heart$trestbps + 
@@ -143,7 +143,7 @@ model &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt"
 
 model2 &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>age <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>sex <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>trestbps <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>chol <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>exang, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
 
-<span class="kw">print</span>(<span class="kw">summary</span>(model2))</code></pre></div>
+<span class="kw">summary</span>(model2)</code></pre></div>
 <pre><code>## 
 ## Call:
 ## glm(formula = heart$target ~ heart$age + heart$sex + heart$trestbps + 
@@ -172,81 +172,78 @@ model2 &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt
 ## AIC: 307.03
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
-<p>The next predictor with the highest p-value appears to be age, with a p-value of 0.4069. This will also be dropped from the model.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># REMOVE TRESTBPS</span>
+<p>The next predictor with the highest p-value appears to be age, with a p-value of 0.2249. This will also be dropped from the model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># REMOVE AGE</span>
 
-model3 &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st">  </span><span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>sex <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>age <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span>heart<span class="op">$</span>chol <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>exang, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+model3 &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>sex <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>trestbps <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>chol <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>exang, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
 
-<span class="kw">print</span>(<span class="kw">summary</span>(model3))</code></pre></div>
+<span class="kw">summary</span>(model3)</code></pre></div>
 <pre><code>## 
 ## Call:
-## glm(formula = heart$target ~ +heart$sex + heart$age + heart$chol + 
+## glm(formula = heart$target ~ heart$sex + heart$trestbps + heart$chol + 
 ##     heart$thalach + heart$exang, family = binomial(link = &quot;logit&quot;))
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -2.3518  -0.7919   0.3222   0.7960   2.6061  
+## -2.4595  -0.7402   0.3225   0.8034   2.5525  
 ## 
 ## Coefficients:
-##                Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)    0.149992   1.826176   0.082   0.9345    
-## heart$sex     -1.709828   0.346408  -4.936 7.98e-07 ***
-## heart$age     -0.033555   0.018107  -1.853   0.0639 .  
-## heart$chol    -0.006378   0.002887  -2.209   0.0271 *  
-## heart$thalach  0.034301   0.007889   4.348 1.37e-05 ***
-## heart$exang   -1.578560   0.323981  -4.872 1.10e-06 ***
+##                 Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)     0.319332   1.650270   0.194   0.8466    
+## heart$sex      -1.750001   0.354672  -4.934 8.05e-07 ***
+## heart$trestbps -0.020929   0.008471  -2.471   0.0135 *  
+## heart$chol     -0.007087   0.002879  -2.461   0.0138 *  
+## heart$thalach   0.040510   0.007613   5.321 1.03e-07 ***
+## heart$exang    -1.498601   0.321726  -4.658 3.19e-06 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 417.64  on 302  degrees of freedom
-## Residual deviance: 297.41  on 297  degrees of freedom
-## AIC: 309.41
+## Residual deviance: 294.51  on 297  degrees of freedom
+## AIC: 306.51
 ## 
 ## Number of Fisher Scoring iterations: 5</code></pre>
 <p>At this point, AGE seems to have the highest p-value and will be dropped.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># REMOVE AGE</span>
-model4 &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st">  </span><span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>sex  <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span>heart<span class="op">$</span>chol <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>exang, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># REMOVE CHOL </span>
+model4 &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>sex <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>trestbps <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>exang, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
 
-<span class="kw">print</span>(<span class="kw">summary</span>(model4))</code></pre></div>
+<span class="kw">summary</span>(model4)</code></pre></div>
 <pre><code>## 
 ## Call:
-## glm(formula = heart$target ~ +heart$sex + heart$chol + heart$thalach + 
+## glm(formula = heart$target ~ heart$sex + heart$trestbps + heart$thalach + 
 ##     heart$exang, family = binomial(link = &quot;logit&quot;))
 ## 
 ## Deviance Residuals: 
 ##     Min       1Q   Median       3Q      Max  
-## -2.4074  -0.7864   0.3674   0.7982   2.5653  
+## -2.3476  -0.7508   0.3760   0.7868   2.4741  
 ## 
 ## Coefficients:
-##                Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)   -2.322446   1.255853  -1.849   0.0644 .  
-## heart$sex     -1.640159   0.341073  -4.809 1.52e-06 ***
-## heart$chol    -0.007320   0.002849  -2.569   0.0102 *  
-## heart$thalach  0.039603   0.007419   5.338 9.39e-08 ***
-## heart$exang   -1.522917   0.319470  -4.767 1.87e-06 ***
+##                 Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)    -1.151206   1.509060  -0.763  0.44554    
+## heart$sex      -1.513736   0.330076  -4.586 4.52e-06 ***
+## heart$trestbps -0.021517   0.008306  -2.590  0.00958 ** 
+## heart$thalach   0.038151   0.007298   5.228 1.72e-07 ***
+## heart$exang    -1.526950   0.317767  -4.805 1.55e-06 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
 ## (Dispersion parameter for binomial family taken to be 1)
 ## 
 ##     Null deviance: 417.64  on 302  degrees of freedom
-## Residual deviance: 300.90  on 298  degrees of freedom
-## AIC: 310.9
+## Residual deviance: 300.50  on 298  degrees of freedom
+## AIC: 310.5
 ## 
-## Number of Fisher Scoring iterations: 5</code></pre>
-<p>At this point, CHOL seems to have the highest p-value and will be dropped.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># REMOVE CHOL</span>
-model5 &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st">  </span><span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>sex  <span class="op">+</span><span class="st"> </span>
-<span class="st">    </span><span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>exang, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>At this point, trestbps seems to have the highest p-value (still &gt;0.001) and will be dropped.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># REMOVE trestbps</span>
+model5 &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>sex <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>exang, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
 
-<span class="kw">print</span>(<span class="kw">summary</span>(model5))</code></pre></div>
+<span class="kw">summary</span>(model5)</code></pre></div>
 <pre><code>## 
 ## Call:
-## glm(formula = heart$target ~ +heart$sex + +heart$thalach + heart$exang, 
+## glm(formula = heart$target ~ heart$sex + heart$thalach + heart$exang, 
 ##     family = binomial(link = &quot;logit&quot;))
 ## 
 ## Deviance Residuals: 
@@ -279,80 +276,420 @@ model5 &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">heart<span class="op">$</span>predict &lt;-<span class="st"> </span><span class="kw">predict</span>(model5, <span class="dt">type =</span> <span class="st">&quot;response&quot;</span>)
 <span class="kw">boxplot</span>(predict <span class="op">~</span><span class="st"> </span>target, <span class="dt">data =</span> heart)</code></pre></div>
 <p><img src="data:image/png;base64,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LW9YA1rL1Zd7bgTmzJkTU6ZM0YDmpiLlDOT000+P9I+ddNcFU34EPvzww1i9enV07NgxP0GJJBMYPXp0LF68OHr06EGkwgIa0AqD2hwBAgTyKtChQ4e49tpr46STTspriOIikCuBBx54INI/EEyVF3AOaOVNbZEAAQIECBAgQGAzAhrQzeBYRIAAAQIECBAgUHkBDWjlTW2RwFYL7LDDDtG/f/+t/pwPECBAgACBIgo4B7SIVRNz6QQGDRoU6WUiQIAAAQK1IFCqPaDpVhZz5851wnAtfHPlSIAAAQIECBRWoJAN6P/+7//GBRdcEOecc048+uijGf6//du/xS677JIdxuzatWvccMMNhS2KwAkQIECAAAECZRYo3CH41Hwedthh0a5du9hxxx3jJz/5SVx99dXxzW9+M84444w4/vjj46c//Wn87d/+beyxxx5xwgknlLl+ciNAgAABAgQIFE6gcHtAv/3tb8dBBx0Ur7/+eqSbd3/pS1+K888/Py699NL40Y9+lDWhd955Z5x44onZ/e4KVxEBEyBAgAABAgRKLlC4BvSVV16J4cOHx7bbbhutWrWKv/mbv8lKNGzYsA1Kddppp8Vrr722wTy/EMirwMMPP5z9Qyqv8YmLAAECBAhUUqBwDWjPnj1jxowZ6wzq3z/yyCPr5qU36VB97969N5jnFwJ5FVixYkW2Vz+v8YmLAAECBAhUUqBw54Cmi4+GDh2anQeazgF96KGH4stf/nJceeWV2dXvdXV1ce+992bnhd50002VtLItAgQIECBAgACBCggUrgFN53ZOmTIlazDffffd7Gr30aNHx+LFi+OSSy6JtWvXZofm0/v6w/MVcLIJAgQIECBAgACBCgkUrgFNeafzPT9+zudtt90WEydOjOeeey723Xff2H333StEZDMECBAgQIAAAQKVFChkA7opgF133TU++9nPZovfe++9aNOmTXTs2HFTq5tPIDcCe++9d6Q9+SYCBAgQIFALAoW7CGlLi7LbbrvFqFGjtnT1detNmjQp2rdv3+jrySefjHvuuWfd57wh8OcI9OvXL9KdG0wECBAgQKAWBEq1B3T9go0dOzb23HPP9Wdt0fuzzjoru5doYyt369bNYf7GkCwnQIAAAQIECDQgUNoGdMKECQ2k2/is1q1bZ09ZamzNdA/S9DIRIECAAAECBAhsnUDhD8Gnq97ffPPNWLp06dZlbm0CBAgQIECAAIEWEShkA7po0aIYN25c9OnTJ9tb2aNHj+jevXt06dIlDjjggOyxnMuXL28RUIMSaIrAsmXLYu7cuU35qM8QIECAAIHCCRTuEPyCBQti0KBB2eHvdCumvn37RjofMx0OT3tB582bF1OnTo30PPh0k/p0cYeJQN4FHnvssbjuuutc2Jb3QomPAAECBCoiULgGNN3rM+35fPDBB7Mr1RtSuOqqq7KnJaUr2sePH9/QKuYRIECAAAECBAi0kEDhDsHPmjUrRo4cucnmMzm2bds2u6fifffd10KshiVAgAABAgQIENiUQOEa0KOOOipmzpy5qXzWzZ8xY0b06tVr3e/eECBAgAABAgQI5EOgcIfghw8fHqkJTc9+HzFiRHaOZ7oAKd0+KZ0DOn/+/Jg8eXJMmzYtO0yfD2ZRECBAgAABAgQI1AsUrgE98MADY/bs2TFmzJjsSUdr1qypz2Xdz7q6upg+fXoMHjx43TxvCORZYMiQIXHooYfmOUSxESBAgACBigkUrgFNmffv3z+7wn3VqlWxcOHCbK/n6tWro2fPntG7d+/slkwVE7IhAlUQ6NSpU6SXiQABAgQI1IJAIRvQ+sK0a9cua0ZTQ2oiQIAAAQIECBAohkDhLkIqBqsoCRAgQIAAAQIENiWgAd2UjPkECBAgQIAAAQLNIqABbRZWGyWwdQIvvfRSpAcnmAgQIECAQC0IaEBrocpyzL3AnDlzYsqUKbmPU4AECBAgQKASAoW+CKkSALZBgACBWhFYuXJlfO9734upU6fWSsryJPBnCaS/GVPzCGhAm8fVVgkQIJA7gXTruscffzx3cQmIQF4F3B6v+SrjEHzz2doyAQIECBAgQIBAAwL2gDaAYhaBagvssMMO2T1tqz2u8WpLIO3Nufjii+Oggw6qrcRlS6CJAl/+8peb+Ekfa0xAA9qYkOUEqiAwaNCgSC8TgeYUSA/vSI99Pemkk5pzGNsmUBqBr33ta6XJJW+JOASft4qIhwABAgQIECBQcgENaMkLLD0CBAgQIECAQN4ENKB5q4h4CBAgQIAAAQIlF9CAlrzA0iNAgAABAgQI5E1AA5q3ioinJgUefvjhOP/882syd0kTIECAQO0JaEBrr+YyzqHAihUr4vXXX89hZEIiQIAAAQKVF9CAVt7UFgkQIECAAAECBDYjoAHdDI5FBAgQIECAAAEClRfQgFbe1BYJECBAgAABAgQ2I6AB3QyORQSqJbD33nvH6NGjqzWccQgQIECAQIsKeBRni/IbnMAfBfr16xfpZSJAgAABArUgYA9oLVRZjgQIECBAgACBHAloQHNUDKEQIECAAAECBGpBQANaC1WWIwECBAgQIEAgRwIa0BwVQyi1K7Bs2bKYO3du7QLInAABAgRqSkADWlPllmxeBR577LG46KKL8hqeuAgQIECAQEUFNKAV5bQxAgQIECBAgACBxgQ0oI0JWU6AAAECBAgQIFBRAQ1oRTltjAABAgQIECBAoDEBDWhjQpYTIECAAAECBAhUVMCTkCrKaWMEmiYwZMiQOPTQQ5v2YZ8iQIAAAQIFE9CAFqxgwi2nQKdOnSK9TAQIECBAoBYEHIKvhSrLkQABAgQIECCQIwENaI6KIRQCBAgQIECAQC0IaEBrocpyJECAAAECBAjkSEADmqNiCKV2BV566aWYNGlS7QLInAABAgRqSkADWlPllmxeBebMmRNTpkzJa3jiIkCAAAECFRXQgFaU08YIECBAgAABAgQaEyhVA7pkyZJYvnx5YzlbToAAAQIECBAg0IIChWxAn3766fjc5z4X7733XkZ39913R58+fWLnnXeOHXbYIQ455JD4+c9/3oKshiZAgAABAgQIENiUQOEa0KeeeiqOOOKI+Oijj7KcnnzyyTjllFOie/fuMXHixPje974XnTt3jr/8y7/UhG6q6ubnTiD9w6l///65i0tABAgQIECgOQQK9ySk22+/Pdv7+T//8z+Zxw033BC77LJLpMa0TZs/pjN27Nioq6uLm2++OY455pjmcLNNAhUVGDRoUKSXiQABAgQI1IJA4faAPvPMM3HiiSeuq80777wTn//859c1n/ULhg8fHrNmzar/1U8CBAgQIECAAIGcCBSuAd1///3jpz/9afz+97/PCI899thIe0PrD8mnmWvXro1777039t5775wwC4MAAQIECBAgQKBeoHCH4MeNG5ddZHT44YfHZZddFkcddVR88pOfjMGDB8fZZ58d2223XUyePDnuv//+mDlzZn2efhIgQIAAAQIECOREoHAN6O677x6PPfZYfOtb34qzzjprgz2f9Q3nQQcdlO0VTVfDmwgQIECAAAECBPIlULgGNPENHDgw/vM//zO+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CL5Q5RIsAQIECBAgQKD4AhrQ4tdQBgQIECBAgACBQgloQAtVLsESIECAAAECBIovoAEtfg1lQIAAAQIECBAolIAGtFDlEiwBAgQIECBAoPgCGtDi11AGBAgQIECAAIFCCWhAC1UuwRIgQIAAAQIEii+gAS1+DWVAgAABAgQIECiUgAa0UOUSLAECBAgQIECg+AIa0OLXUAYECBAgQIAAgUIJaEALVS7Blllg7dq1ZU5PbgQIbEbgo48+ilWrVm1mDYsIlEtAA1quesqmYALLly+PcePGxZ577hndunWLU089NX73u98VLAvhEiDw5wisWbMmTj755Dj//PP/nM34LIFCCWhAC1UuwZZN4B//8R/jzjvvjB/+8Ifx3//93/Haa69FXV1d2BtatkrLh0DDAh988EF86UtfimnTpjW8grkESirQpqR5SYtA7gVeeOGF+MEPfhB33XVX1nSmgG+//fYYOHBgTJ8+PT796U/nPgcBEiDQdIFnn302Ro4cGa+//nr06NGj6RvySQIFFLAHtIBFE3I5BB544IFo165dDB06dF1Ce++9d+y1117xs5/9bN08bwgQKKfAj3/84+jVq1c8//zz0bdv33ImKSsCmxCwB3QTMGYTaG6BOXPmxE477ZQ1oeuP1bNnz1i8ePH6s7wnQKCEAhMmTMj+G1DC1KREoFEBe0AbJbICgeYRWLZsWXbh0ce33rVrVw3ox1H8TqCEAukfoCYCtSqgAa3Vysu7xQXatm0brVtv/CfYqlUrt2Np8eoIgAABAgSaU2Dj//s152i2TYDAOoFddtkl3n777XW/179J87bffvv6X/0kQIAAAQKlE9CAlq6kEiqKwK677hpvvvlmpBtQrz+98cYbLkhYH8R7AgQIECidgAa0dCWVUFEEjj/++FixYkU88sgj60JO9wF98cUXY8iQIevmeUOAAAECBMomoAEtW0XlUxiBffbZJ4477ri4+OKL45VXXolFixbFeeedF4MGDYovfOELhclDoAQIECBAYGsFNKBbK2Z9AhUUuPXWW7PzPQcMGBB9+vSJbbbZJm644YZIFyKZCBAgQIBAWQVa/eGRf2vLmpy8CBRF4K233squiE/PgzcRIECAAIGyC2hAy15h+REgQIAAAQIEcibgEHzOCiIcAgQIECBAgEDZBTSgZa+w/AgQIECAAAECORPQgOasIMIhQIAAAQIECJRdQANa9grLjwABAgQIECCQMwENaM4KIhwCBAgQIECAQNkFNKBlr7D8CBAgQIAAAQI5E9CA5qwgwiFAgAABAgQIlF1AA1r2CsuPAAECBAgQIJAzAQ1ozgoiHAIECBAgQIBA2QU0oGWvsPwIECBAgAABAjkT0IDmrCDCIUCAAAECBAiUXUADWvYKy48AAQIECBAgkDMBDWjOCiIcAgQIECBAgEDZBTSgZa+w/AgQIECAAAECORPQgOasIMIhQIAAAQIECJRdQANa9grLjwABAgQIECCQMwENaM4KIhwCBAgQIECAQNkFNKBlr7D8CBAgQIAAAQI5E9CA5qwgwiFAgAABAgQIlF1AA1r2CsuPAAECBAgQIJAzAQ1ozgoiHAIECBAgQIBA2QU0oGWvsPwIECBAgAABAjkT0IDmrCDCIUCAAAECBAiUXUADWvYKy48AAQIECBAgkDMBDWjOCiIcAgQIECBAgEDZBTSgZa+w/AgQIECAAAECORPQgOasIMIhQIAAAQIECJRdQANa9grLjwABAgQIECCQMwENaM4KIhwCBAgQIECAQNkFNKBlr7D8CBAgQIAAAQI5E9CA5qwgwiFAgAABAgQIlF1AA1r2CsuPAAECBAgQIJAzAQ1ozgoiHAIECBAgQIBA2QU0oGWvsPwIECBAgAABAjkT0IDmrCDCIUCAAAECBAiUXUADWvYKy48AAQIECBAgkDMBDWjOCiIcAgQIECBAgEDZBTSgZa+w/AgQIECAAAECORPQgOasIMIhQIAAAQIECJRdQANa9grLjwABAgQIECCQMwENaM4KIhwCBAgQIECAQNkFNKBlr7D8CBAgQIAAAQI5E9CA5qwgwiFAgAABAgQIlF1AA1r2CsuPAAECBAgQIJAzAQ1ozgoiHAIECBAgQIBA2QU0oGWvsPwIECBAgAABAjkT0IDmrCDCIUCAAAECBAiUXUADWvYKy48AAQIECBAgkDMBDWjOCiIcAgQIECBAgEDZBTSgZa+w/AgQIECAAAECORPQgOasIMIhQIAAAQIECJRdQANa9grLjwABAgQIECCQMwENaM4KIhwCBAgQIECAQNkFNKBlr7D8CBAgQIAAAQI5E9CA5qwgwiFAgAABAgQIlF1AA1r2CsuPAAECBAgQIJAzAQ1ozgoiHAIECBAgQIBA2QU0oGWvsPwIECBAgAABAjkT0IDmrCDCIUCAAAECBAiUXUADWvYKy48AAQIECBAgkDMBDWjOCiIcAgQIECBAgEDZBf4fVewgpob0NEYAAAAASUVORK5CYII=" /><!-- --></p>
+<p>The plot shows a significant difference in the predicted probabilities of those with heart disease and without. Those without heart disease have a lower interquartile range and median, compared to that of those without the disease. This means that the model can generally predict whether someone has heart disease fairly well. However, there are some outliers in the boxplot for those who have heart disease, meaning that some of those individuals with heart disease had a low predicted probability. Still, the median predicted probability for those without heart disease is below 0.5 and the median for those with heart disease is above 0.5, indicating a well predicting model.</p>
 </div>
 <div id="exercise-4.-repeat-exercise-1-but-now-with-forward-selection-rather-than-backward-elimination.-again-use-a-significance-level-of-0.001" class="section level1">
 <h1>Exercise 4. Repeat Exercise 1 but now with forward selection rather than backward elimination. Again use a significance level of 0.001</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelA &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>age)
-<span class="kw">print</span>(<span class="st">&quot;Model A(Age): &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Model A(Age): &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(modelA,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.05082261</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelB &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>thalach)
-<span class="kw">print</span>(<span class="st">&quot;Model B(Thalach): &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Model B(Thalach): &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(modelB,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.1778654</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelC &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang)
-<span class="kw">rsq</span>(modelC,<span class="dt">adj=</span><span class="ot">TRUE</span>,<span class="dt">data=</span>heart)</code></pre></div>
-<pre><code>## [1] 0.1880682</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="st">&quot;Model C(Exang): &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Model C(Exang): &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(modelC,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.1907567</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelD &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>sex)
-<span class="kw">print</span>(<span class="st">&quot;Model D(Sex): &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Model D(Sex): &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(modelD,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.07892536</code></pre>
-<p>The model with one predictor that has the largest adjusted R2 is the model with the thalach predictor, and because this adjusted R2 is larger than the adjusted R2 from the model with no predictors (Radj 2 = 0), it will be added to our model.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelE &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang)
-<span class="kw">print</span>(<span class="st">&quot;Baseline Model (Exang): &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Baseline Model (Exang): &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(modelD,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.07892536</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelF &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach)
-<span class="kw">print</span>(<span class="st">&quot;Model F:Exang + Thalach: &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Model F:Exang + Thalach: &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(modelF,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.2674474</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelG &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>sex)
-<span class="kw">print</span>(<span class="st">&quot;Model G: Exang + Sex: &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Model G: Exang + Sex: &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(modelG,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.2397285</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelH &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>age)
-<span class="kw">print</span>(<span class="st">&quot;Model H: Exang + Age: &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Model H: Exang + Age: &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(modelH,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.2246218</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelI &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach)
-<span class="kw">print</span>(<span class="st">&quot;Model F:Exang + Thalach: &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Model F:Exang + Thalach: &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(modelF,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.2674474</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelJ &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>fbs)
-<span class="kw">print</span>(<span class="st">&quot;Model G: Exang + FBS: &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Model G: Exang + FBS: &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(modelG,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.2397285</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelK &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>trestbps)
-<span class="kw">print</span>(<span class="st">&quot;Model H: Exang + TrestBPS: &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Model H: Exang + TrestBPS: &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(modelH,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.2246218</code></pre>
-<p>All models that are attached to the Exang predictor (Thalach, Sex, Age) all have lesser adjusted Rsquared values compared to the baseline Rsquared model, indicated they should not be part of the model. Therefore, the most useful predictor for this model is Exang.</p>
+<p>Model A(Age):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelA &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>age, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>)) 
+<span class="kw">summary</span>(modelA)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$age, family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.7125  -1.1773   0.8296   1.0685   1.5947  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  3.03623    0.75639   4.014 5.97e-05 ***
+## heart$age   -0.05235    0.01363  -3.841 0.000122 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 401.86  on 301  degrees of freedom
+## AIC: 405.86
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>Model B(Thalach):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelB &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>thalach, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+<span class="kw">summary</span>(modelB)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$thalach, family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.1383  -1.0780   0.6043   0.9200   2.1354  
+## 
+## Coefficients:
+##                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   -6.391452   0.987133  -6.475 9.50e-11 ***
+## heart$thalach  0.043951   0.006531   6.729 1.71e-11 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 359.26  on 301  degrees of freedom
+## AIC: 363.26
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>Model C(Exang):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelC &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>)) 
+<span class="kw">summary</span>(modelC)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang, family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.5434  -0.7272   0.8512   0.8512   1.7086  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   0.8287     0.1522   5.444 5.21e-08 ***
+## heart$exang  -2.0239     0.2825  -7.164 7.82e-13 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 357.90  on 301  degrees of freedom
+## AIC: 361.9
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>Model D: (Sex):</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelD &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>sex, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+<span class="kw">summary</span>(modelD)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$sex, family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.6651  -1.0923   0.7585   1.2650   1.2650  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   1.0986     0.2357   4.661 3.15e-06 ***
+## heart$sex    -1.3022     0.2740  -4.752 2.01e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 392.80  on 301  degrees of freedom
+## AIC: 396.8
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>At this point, the exang predictor has the smallest p-value of 7.82e-13 and thus will be taken as the baseline model.</p>
+<ol style="list-style-type: decimal">
+<li>Baseline Model (Exang):</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelE &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+<span class="kw">summary</span>(modelE)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang, family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.5434  -0.7272   0.8512   0.8512   1.7086  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   0.8287     0.1522   5.444 5.21e-08 ***
+## heart$exang  -2.0239     0.2825  -7.164 7.82e-13 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 357.90  on 301  degrees of freedom
+## AIC: 361.9
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>Model F (Exang+Thalach):</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelF &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+<span class="kw">summary</span>(modelF)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang + heart$thalach, family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.1602  -0.7832   0.5639   0.8095   2.2342  
+## 
+## Coefficients:
+##                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   -4.357086   1.036198  -4.205 2.61e-05 ***
+## heart$exang   -1.600405   0.300451  -5.327 1.00e-07 ***
+## heart$thalach  0.033787   0.006728   5.022 5.12e-07 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 329.09  on 300  degrees of freedom
+## AIC: 335.09
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>Model G (Exang+Sex):</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelG &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>sex, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+<span class="kw">summary</span>(modelG)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang + heart$sex, family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.9335  -0.8400   0.5789   0.9928   1.8627  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   1.7016     0.2783   6.113 9.76e-10 ***
+## heart$exang  -1.9918     0.2927  -6.805 1.01e-11 ***
+## heart$sex    -1.2506     0.3016  -4.146 3.38e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 339.21  on 300  degrees of freedom
+## AIC: 345.21
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<ol start="4" style="list-style-type: decimal">
+<li>Model H (Exang+Age)</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelH &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>age, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+<span class="kw">summary</span>(modelH)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang + heart$age, family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.9091  -0.7997   0.6229   0.8580   2.1489  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  3.68408    0.84774   4.346 1.39e-05 ***
+## heart$exang -2.02116    0.28908  -6.992 2.71e-12 ***
+## heart$age   -0.05226    0.01502  -3.480 0.000501 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 345.07  on 300  degrees of freedom
+## AIC: 351.07
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<ol start="5" style="list-style-type: decimal">
+<li>Model I (Exang+FBS)</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelI &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>fbs, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+<span class="kw">summary</span>(modelI)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang + heart$fbs, family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.5511  -0.7331   0.8452   0.8452   1.7530  
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   0.8457     0.1613   5.245 1.57e-07 ***
+## heart$exang  -2.0225     0.2826  -7.158 8.20e-13 ***
+## heart$fbs    -0.1175     0.3600  -0.326    0.744    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 357.80  on 300  degrees of freedom
+## AIC: 363.8
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<ol start="6" style="list-style-type: decimal">
+<li>Model J (Exang+Trest):</li>
+</ol>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelJ &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>trestbps, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+<span class="kw">summary</span>(modelJ)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang + heart$trestbps, family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -1.7868  -0.7927   0.7260   0.8595   2.0720  
+## 
+## Coefficients:
+##                 Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)     3.079487   1.025874   3.002  0.00268 ** 
+## heart$exang    -2.024557   0.285532  -7.090 1.34e-12 ***
+## heart$trestbps -0.017096   0.007658  -2.232  0.02559 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 352.75  on 300  degrees of freedom
+## AIC: 358.75
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>Predictor thalach has the smallest p-value, which is 5.12e-07. Thus we can attach thalach as a predictor for the model.</p>
+<p>Then we try the next iteration:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelK &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>age, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+modelL &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>sex, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+modelM &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>trestbps, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+modelN &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>chol, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+modelO &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>thalach <span class="op">+</span><span class="st"> </span>heart<span class="op">$</span>fbs, <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>))
+<span class="kw">summary</span>(modelK)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang + heart$thalach + heart$age, 
+##     family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.0966  -0.7907   0.5119   0.8134   2.2690  
+## 
+## Coefficients:
+##                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   -2.252136   1.639796  -1.373    0.170    
+## heart$exang   -1.641503   0.303859  -5.402 6.58e-08 ***
+## heart$thalach  0.029622   0.007168   4.132 3.59e-05 ***
+## heart$age     -0.026743   0.016387  -1.632    0.103    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 326.40  on 299  degrees of freedom
+## AIC: 334.4
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(modelL)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang + heart$thalach + heart$sex, 
+##     family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.2932  -0.7633   0.4157   0.8033   2.4640  
+## 
+## Coefficients:
+##                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   -3.935401   1.082508  -3.635 0.000277 ***
+## heart$exang   -1.564823   0.315279  -4.963 6.93e-07 ***
+## heart$thalach  0.037298   0.007134   5.228 1.71e-07 ***
+## heart$sex     -1.402455   0.317487  -4.417 9.99e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 307.53  on 299  degrees of freedom
+## AIC: 315.53
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(modelM)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang + heart$thalach + heart$trestbps, 
+##     family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.0633  -0.7716   0.5216   0.8220   2.2256  
+## 
+## Coefficients:
+##                 Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)    -2.082965   1.453392  -1.433   0.1518    
+## heart$exang    -1.598070   0.303709  -5.262 1.43e-07 ***
+## heart$thalach   0.033885   0.006778   4.999 5.76e-07 ***
+## heart$trestbps -0.017389   0.007977  -2.180   0.0293 *  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 324.19  on 299  degrees of freedom
+## AIC: 332.19
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(modelN)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang + heart$thalach + heart$chol, 
+##     family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.1183  -0.7732   0.5368   0.8309   2.2610  
+## 
+## Coefficients:
+##                Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   -3.621410   1.176280  -3.079  0.00208 ** 
+## heart$exang   -1.584407   0.301293  -5.259 1.45e-07 ***
+## heart$thalach  0.034318   0.006784   5.059 4.21e-07 ***
+## heart$chol    -0.003319   0.002550  -1.301  0.19317    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 327.41  on 299  degrees of freedom
+## AIC: 335.41
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(modelO)</code></pre></div>
+<pre><code>## 
+## Call:
+## glm(formula = heart$target ~ heart$exang + heart$thalach + heart$fbs, 
+##     family = binomial(link = &quot;logit&quot;))
+## 
+## Deviance Residuals: 
+##     Min       1Q   Median       3Q      Max  
+## -2.1644  -0.7824   0.5612   0.8115   2.2278  
+## 
+## Coefficients:
+##               Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)   -4.34053    1.03915  -4.177 2.95e-05 ***
+## heart$exang   -1.59767    0.30076  -5.312 1.08e-07 ***
+## heart$thalach  0.03375    0.00673   5.015 5.30e-07 ***
+## heart$fbs     -0.07910    0.37248  -0.212    0.832    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 417.64  on 302  degrees of freedom
+## Residual deviance: 329.05  on 299  degrees of freedom
+## AIC: 337.05
+## 
+## Number of Fisher Scoring iterations: 4</code></pre>
+<p>Sex predictor has the least p-value and it’s the only one &lt;0.001 while the rest all have p values all &gt;0.001. Hence, we can stop here with exang, thalach and sex as our three final predictors to be included in the model.</p>
 </div>
 <div id="exercise-5-are-your-final-models-from-exercises-1-and-4-the-same-are-the-final-models-from-forward-selection-and-backward-elimination-always-the-same-please-explain." class="section level1">
 <h1>Exercise 5: Are your final models from Exercises 1 and 4 the same? Are the final models from forward selection and backward elimination always the same? Please explain.</h1>
-<p>The results differ from the original backward selection model. There is no guarantee that backward elimination and forward selection will arrive at the same final model.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="st">&quot;Backward Elimination:  &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Backward Elimination:  &quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(<span class="kw">rsq</span>(model5,<span class="dt">data=</span>heart))</code></pre></div>
-<pre><code>## [1] 0.3271438</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">modelE &lt;-<span class="st"> </span><span class="kw">glm</span>(<span class="dt">formula =</span> heart<span class="op">$</span>target <span class="op">~</span><span class="st"> </span>heart<span class="op">$</span>exang)
-<span class="kw">print</span>(<span class="st">&quot;Forward Selection (Exang): &quot;</span>)</code></pre></div>
-<pre><code>## [1] &quot;Forward Selection (Exang): &quot;</code></pre>
-<p>As the Forward Selection model has the highest adjusted R-squared value, it should be used instead of the backward elimination model.</p>
+<p>The model from backward elimination (Ex 1) and that from forward selection (Ex 4) are different. There is no guarantee that backward elimination and forward selection will arrive at the same final model. This is because stepwise regression methods are greedy in that you can add or remove one variable at a time. This process cannot yield the same model for all datasets.</p>
 </div>
 </section>
 

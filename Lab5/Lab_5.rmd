@@ -1,7 +1,7 @@
 ---
 title: "Lab5"
 author: "Dion, Julie, Mia, Vincent"
-date: "9/13/2019"
+date: "9/20/2019"
 output: 
     prettydoc::html_pretty:
     theme: cayman
@@ -21,7 +21,7 @@ library(rsq)
 heart <- read.csv('Lab_5_heart.csv',header=T,na.strings=c(""))
 model <- glm(formula = heart$target ~ heart$age + heart$sex + heart$trestbps + heart$chol + heart$fbs + heart$thalach + heart$exang, family = binomial (link = "logit"))
 
-print(summary(model))
+summary(model)
 ```
 Currently, the FBS predictor has the highest p-value of 0.6281. Using backward elimination, this predictor will be dropped in the next iteration of the model (model2).
 ```{r}
@@ -48,7 +48,7 @@ At this point, AGE seems to have the highest p-value and will be dropped.
 # REMOVE CHOL 
 model4 <- glm(formula = heart$target ~ heart$sex + heart$trestbps + heart$thalach + heart$exang, family = binomial(link = "logit"))
 
-print(summary(model4))
+summary(model4)
 ```
 At this point, trestbps seems to have the highest p-value (still >0.001) and will be dropped. 
 
@@ -134,7 +134,7 @@ summary(modelI)
 modelJ <- glm(formula = heart$target ~ heart$exang + heart$trestbps, family = binomial(link = "logit"))
 summary(modelJ)
 ```
-Predictor thalach has the least p-value, which is 5.12e-07. Thus we can attach thalach as a predictor for the model. 
+Predictor thalach has the smallest p-value, which is 5.12e-07. Thus we can attach thalach as a predictor for the model. 
 
 Then we try the next iteration:
 
@@ -156,15 +156,5 @@ Sex predictor has the least p-value and it's the only one <0.001 while the rest 
 
 #Exercise 5: Are your final models from Exercises 1 and 4 the same? Are the final models from forward selection and backward elimination always the same? Please explain.
 
-The results differ from the original backward selection model. There is no guarantee that backward elimination and forward selection will arrive at the same final model. 
+The model from backward elimination (Ex 1) and that from forward selection (Ex 4) are different. There is no guarantee that backward elimination and forward selection will arrive at the same final model. This is because stepwise regression methods are greedy in that you can add or remove one variable at a time. This process cannot yield the same model for all datasets. 
 
-```{r}
-print("Backward Elimination:  ")
-print(rsq(model5,data=heart))
-
-modelG <- glm(formula = heart$target ~ heart$exang + heart$sex)
-print("Forward Selection (Exang): ")
-print(rsq(modelG,data=heart))
-
-```
-As the Forward Selection model has the highest adjusted R-squared value, it should be used instead of the backward elimination model. 
