@@ -59,10 +59,11 @@ model5 <- glm(formula = heart$target ~ heart$sex + heart$thalach + heart$exang, 
 summary(model5)
 
 ```
+This is our final model.
 
 # Excerise 2: Interpret the coefficient with the smallest p-value in the final model fit from Exercise 1. Make sure your interpretation is in context and explains the respective predictor.
 
-In the final model, the predictor with the smalled p-value is the thalach predictor. This means that the thalach predictor is the most statistically significant predictor, and demonstrates that with each one unit increase in the target, there is a -1.564 decrease in the exang predictor. 
+In the final model, the predictor with the smallest p-value is the maximum heart rate achieved (thalach). This means that the maximum heart rate achieved is the most statistically significant, which implies that the presence of heart disease is most likely correlated with the maximum heart rate achieved. For every 1 unit increase in the maximum heart rate achieved, the log odds of the presence of heart disease increases by 0.037298.
 
 # Exercise 3: Create a side-by-side box plot of the predicted probabilities from your final model from Exercise 1 split out by whether the person had heart disease or not. What does this plot suggest about how well this model can determine whether someone has heart disease?
 
@@ -71,7 +72,7 @@ heart$predict <- predict(model5, type = "response")
 boxplot(predict ~ target, data = heart)
 ```
 
-The plot shows a significant difference in the predicted probabilities of those with heart disease and without. Those without heart disease have a lower interquartile range and median, compared to that of those without the disease. This means that the model can generally predict whether someone has heart disease fairly well. However, there are some outliers in the boxplot for those who have heart disease, meaning that some of those individuals with heart disease had a low predicted probability. Still, the median predicted probability for those without heart disease is below 0.5 and the median for those with heart disease is above 0.5, indicating a well predicting model. 
+The plot shows a significant difference in the distribution of the predicted probabilities of those with heart disease and without. Those without heart disease have a lower interquartile range and median, compared to that of those without the disease. This means that the model can generally predict whether someone has heart disease fairly well. However, there are some outliers in the boxplot for those who have heart disease, meaning that some of those individuals with heart disease had a low predicted probability. Still, the median predicted probability for those without heart disease is below 0.5 and the median for those with heart disease is above 0.5, indicating a model that can make good predictions.
 
 # Exercise 4. Repeat Exercise 1 but now with forward selection rather than backward elimination. Again use a significance level of 0.001
 
@@ -98,7 +99,7 @@ Model D: (Sex):
 modelD <- glm(formula = heart$target ~ heart$sex, family = binomial(link = "logit"))
 summary(modelD)
 ```
-At this point, the exang predictor has the smallest p-value of 7.82e-13 and thus will be taken as the baseline model. 
+At this point, the exang predictor has the smallest p-value of 7.82e-13 and thus will be taken as the baseline model.
 
 1. Baseline Model (Exang):
 
@@ -154,7 +155,7 @@ summary(modelO)
 Sex predictor has the least p-value and it's the only one <0.001 while the rest all have p values all >0.001. Hence, we can stop here with exang, thalach and sex as our three final predictors to be included in the model.
 
 
-#Exercise 5: Are your final models from Exercises 1 and 4 the same? Are the final models from forward selection and backward elimination always the same? Please explain.
+# Exercise 5: Are your final models from Exercises 1 and 4 the same? Are the final models from forward selection and backward elimination always the same? Please explain.
 
-The model from backward elimination (Ex 1) and that from forward selection (Ex 4) are different. There is no guarantee that backward elimination and forward selection will arrive at the same final model. This is because stepwise regression methods are greedy in that you can add or remove one variable at a time. This process cannot yield the same model for all datasets. 
+The model from backward elimination (Ex 1) and that from forward selection (Ex 4) are different. There is no guarantee that backward elimination and forward selection will arrive at the same final model. This is because stepwise regression methods are greedy algorithms in which you can add or remove one variable at a time. Greedy algorithms only test $n!$ possible models whereas there are $2^n$ possible models, where $n$ is the number of predictors. Therefore, the elimination process will not yield the same model for all datasets.
 
