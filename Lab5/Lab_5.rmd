@@ -1,50 +1,52 @@
 ---
-title: "Week 5 LAB"
-authors: Mia Raghavan, Julie, 
-output: html_document
+title: "Lab5"
+author: "Dion, Julie, Mia, Vincent"
+date: "9/13/2019"
+output: 
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-```{r}
 library(tidyverse)
 library(readr)
 library(rsq)
+```
 
-####EXERCISE 1: Consider logistic regression with target as the outcome. Perform backward elimination based on p-values using a significance level of 0.001 to obtain a parsimonious model for the presence of heart disease.
+# Exercise 1: Consider logistic regression with target as the outcome. Perform backward elimination based on p-values using a significance level of 0.001 to obtain a parsimonious model for the presence of heart disease.
 
-heart <- read.csv('Lab5.csv',header=T,na.strings=c(""))
+```{r}
+heart <- read.csv('Lab_5_heart.csv',header=T,na.strings=c(""))
 model <- glm(formula = heart$target ~ heart$age + heart$sex + heart$trestbps + heart$chol + heart$fbs + heart$thalach + heart$exang, family = binomial (link = "logit"))
 
 print(summary(model))
 ```
-Currently, the FBS predictor has the highest p-value of 0.6281. Using backward elimination, this predictor will be dropped in the next iteration of the model (model2)
+Currently, the FBS predictor has the highest p-value of 0.6281. Using backward elimination, this predictor will be dropped in the next iteration of the model (model2).
 ```{r}
-########### REMOVE FBS
+# REMOVE FBS
 
 model2 <- glm(formula = heart$target ~ heart$age + heart$sex + heart$trestbps + heart$chol + heart$thalach + heart$exang, family = binomial(link = "logit"))
 
-print(summary(model2))
+summary(model2)
 
 ```
 The next predictor with the highest p-value appears to be age, with a p-value of 0.4069. This will also be dropped from the model. 
 
 ```{r}
-################# REMOVE TRESTBPS
+# REMOVE TRESTBPS
 
 model3 <- glm(formula = heart$target ~  + heart$sex + heart$age + 
     heart$chol + heart$thalach + heart$exang, family = binomial(link = "logit"))
 
-print(summary(model3))
+summary(model3)
 
 ```
 At this point, AGE seems to have the highest p-value and will be dropped. 
 
 ```{r}
-############ REMOVE AGE
+# REMOVE AGE
 model4 <- glm(formula = heart$target ~  + heart$sex  + 
     heart$chol + heart$thalach + heart$exang, family = binomial(link = "logit"))
 
@@ -53,39 +55,53 @@ print(summary(model4))
 At this point, CHOL seems to have the highest p-value and will be dropped. 
 
 ```{r}
-########## DROP CHOL
+# REMOVE CHOL
 model5 <- glm(formula = heart$target ~  + heart$sex  + 
     + heart$thalach + heart$exang, family = binomial(link = "logit"))
 
-print(summary(model5))
+summary(model5)
 
 ```
-#Excerise 2: Interpret the coefficient with the smallest p-value in the final model fit from Exercise 1. Make sure your interpretation is in context and explains the respective predictor.
+
+# Excerise 2: Interpret the coefficient with the smallest p-value in the final model fit from Exercise 1. Make sure your interpretation is in context and explains the respective predictor.
 
 In the final model, the predictor with the smalled p-value is the thalach predictor. This means that the thalach predictor is the most statistically significant predictor, and demonstrates that with each one unit increase in the target, there is a -1.564 decrease in the exang predictor. 
 
-# Exercise 4. Repeat Exercise 1 but now with forward selection rather than backward elimination. Again use a significance level of 0.001
+# Exercise 3: Create a side-by-side box plot of the predicted probabilities from your final model from Exercise 1 split out by whether the person had heart disease or not. What does this plot suggest about how well this model can determine whether someone has heart disease?
 
 ```{r}
-modelA <- glm(formula = heart$target ~ heart$age)
-print("Model A(Age): ")
-print(rsq(modelA,data=heart))
-
-modelB <- glm(formula = heart$target ~ heart$thalach)
-print("Model B(Thalach): ")
-print(rsq(modelB,data=heart))
-
-
-modelC <- glm(formula = heart$target ~ heart$exang)
-rsq(modelC,adj=TRUE,data=heart)
-print("Model C(Exang): ")
-print(rsq(modelC,data=heart))
-
-modelD <- glm(formula = heart$target ~ heart$sex)
-print("Model D(Sex): ")
-print(rsq(modelD,data=heart))
-
+heart$predict <- predict(model5, type = "response")
+boxplot(predict ~ target, data = heart)
 ```
+
+The plot shows a significant difference in the predicted probabilities of those with heart disease and without. Those without heart disease have a lower interquartile range and median, compared to that of those without the disease. This means that the model can generally predict whether someone has heart disease fairly well. However, there are some outliers in the boxplot for those who have heart disease, meaning that some of those individuals with heart disease had a low predicted probability. Still, the median predicted probability for those without heart disease is below 0.5 and the median for those with heart disease is above 0.5, indicating a well predicting model. 
+
+# Exercise 4. Repeat Exercise 1 but now with forward selection rather than backward elimination. Again use a significance level of 0.001
+
+<!-- Model A(Age): -->
+<!-- ```{r} -->
+<!-- modelA <- glm(formula = heart$target ~ heart$age) -->
+<!-- rsq(modelA,data=heart) -->
+<!-- ``` -->
+
+<!-- Model B(Thalach): -->
+<!-- ```{r} -->
+<!-- modelB <- glm(formula = heart$target ~ heart$thalach) -->
+<!-- rsq(modelB,data=heart) -->
+<!-- ``` -->
+
+<!-- Model C(Exang):  -->
+<!-- ```{r} -->
+<!-- modelC <- glm(formula = heart$target ~ heart$exang) -->
+<!-- rsq(modelC,data=heart) -->
+<!-- ``` -->
+
+
+<!-- modelD <- glm(formula = heart$target ~ heart$sex) -->
+<!-- print("Model D(Sex): ") -->
+<!-- print(rsq(modelD,data=heart)) -->
+
+
 The model with one predictor that has the largest adjusted R2 is the model with the thalach predictor, and because this adjusted R2 is larger than the adjusted R2 from the model with no predictors (Radj 2 = 0), it will be added to our model.
 
 ```{r}

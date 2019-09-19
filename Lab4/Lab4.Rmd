@@ -31,7 +31,6 @@ The right-skewed histogram indicates that the values in count are distributed ac
 *Fit a poisson regression model with count as outcome and workingday as only predictor.*
 
 ```{r}
-
 train_po <- glm(count ~ workingday, family = "poisson", data = train)
 summary(train_po)
 ```
