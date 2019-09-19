@@ -32,13 +32,12 @@ model2 <- glm(formula = heart$target ~ heart$age + heart$sex + heart$trestbps + 
 summary(model2)
 
 ```
-The next predictor with the highest p-value appears to be age, with a p-value of 0.4069. This will also be dropped from the model. 
+The next predictor with the highest p-value appears to be age, with a p-value of 0.2249. This will also be dropped from the model. 
 
 ```{r}
-# REMOVE TRESTBPS
+# REMOVE AGE
 
-model3 <- glm(formula = heart$target ~  + heart$sex + heart$age + 
-    heart$chol + heart$thalach + heart$exang, family = binomial(link = "logit"))
+model3 <- glm(formula = heart$target ~ heart$sex + heart$trestbps + heart$chol + heart$thalach + heart$exang, family = binomial(link = "logit"))
 
 summary(model3)
 
@@ -46,18 +45,16 @@ summary(model3)
 At this point, AGE seems to have the highest p-value and will be dropped. 
 
 ```{r}
-# REMOVE AGE
-model4 <- glm(formula = heart$target ~  + heart$sex  + 
-    heart$chol + heart$thalach + heart$exang, family = binomial(link = "logit"))
+# REMOVE CHOL 
+model4 <- glm(formula = heart$target ~ heart$sex + heart$trestbps + heart$thalach + heart$exang, family = binomial(link = "logit"))
 
 print(summary(model4))
 ```
-At this point, CHOL seems to have the highest p-value and will be dropped. 
+At this point, trestbps seems to have the highest p-value (still >0.001) and will be dropped. 
 
 ```{r}
-# REMOVE CHOL
-model5 <- glm(formula = heart$target ~  + heart$sex  + 
-    + heart$thalach + heart$exang, family = binomial(link = "logit"))
+# REMOVE trestbps
+model5 <- glm(formula = heart$target ~ heart$sex + heart$thalach + heart$exang, family = binomial(link = "logit"))
 
 summary(model5)
 
@@ -78,76 +75,96 @@ The plot shows a significant difference in the predicted probabilities of those 
 
 # Exercise 4. Repeat Exercise 1 but now with forward selection rather than backward elimination. Again use a significance level of 0.001
 
-<!-- Model A(Age): -->
-<!-- ```{r} -->
-<!-- modelA <- glm(formula = heart$target ~ heart$age) -->
-<!-- rsq(modelA,data=heart) -->
-<!-- ``` -->
+ Model A(Age):
+```{r}
+modelA <- glm(formula = heart$target ~ heart$age, family = binomial(link = "logit")) 
+summary(modelA)
+``` 
+Model B(Thalach):
 
-<!-- Model B(Thalach): -->
-<!-- ```{r} -->
-<!-- modelB <- glm(formula = heart$target ~ heart$thalach) -->
-<!-- rsq(modelB,data=heart) -->
-<!-- ``` -->
+```{r} 
+modelB <- glm(formula = heart$target ~ heart$thalach, family = binomial(link = "logit"))
+summary(modelB)
+``` 
 
-<!-- Model C(Exang):  -->
-<!-- ```{r} -->
-<!-- modelC <- glm(formula = heart$target ~ heart$exang) -->
-<!-- rsq(modelC,data=heart) -->
-<!-- ``` -->
-
-
-<!-- modelD <- glm(formula = heart$target ~ heart$sex) -->
-<!-- print("Model D(Sex): ") -->
-<!-- print(rsq(modelD,data=heart)) -->
-
-
-The model with one predictor that has the largest adjusted R2 is the model with the thalach predictor, and because this adjusted R2 is larger than the adjusted R2 from the model with no predictors (Radj 2 = 0), it will be added to our model.
+Model C(Exang): 
+```{r}
+modelC <- glm(formula = heart$target ~ heart$exang, family = binomial(link = "logit")) 
+summary(modelC)
+```
+Model D: (Sex): 
 
 ```{r}
-modelE <- glm(formula = heart$target ~ heart$exang)
-print("Baseline Model (Exang): ")
-print(rsq(modelD,data=heart))
-
-modelF <- glm(formula = heart$target ~ heart$exang + heart$thalach)
-print("Model F:Exang + Thalach: ")
-print(rsq(modelF,data=heart))
-
-modelG <- glm(formula = heart$target ~ heart$exang + heart$sex)
-print("Model G: Exang + Sex: ")
-print(rsq(modelG,data=heart))
-
-modelH <- glm(formula = heart$target ~ heart$exang + heart$age)
-print("Model H: Exang + Age: ")
-print(rsq(modelH,data=heart))
-
-modelI <- glm(formula = heart$target ~ heart$exang + heart$thalach)
-print("Model F:Exang + Thalach: ")
-print(rsq(modelF,data=heart))
-
-modelJ <- glm(formula = heart$target ~ heart$exang + heart$fbs)
-print("Model G: Exang + FBS: ")
-print(rsq(modelG,data=heart))
-
-modelK <- glm(formula = heart$target ~ heart$exang + heart$trestbps)
-print("Model H: Exang + TrestBPS: ")
-print(rsq(modelH,data=heart))
+modelD <- glm(formula = heart$target ~ heart$sex, family = binomial(link = "logit"))
+summary(modelD)
 ```
-All models that are attached to the Exang predictor (Thalach, Sex, Age) all have lesser adjusted Rsquared values compared to the baseline Rsquared model, indicated they should not be part of the model.  Therefore, the most useful predictor for this model is Exang.
+At this point, the exang predictor has the smallest p-value of 7.82e-13 and thus will be taken as the baseline model. 
+
+1. Baseline Model (Exang):
+
+```{r}
+modelE <- glm(formula = heart$target ~ heart$exang, family = binomial(link = "logit"))
+summary(modelE)
+```
+
+2. Model F (Exang+Thalach):
+
+```{r}
+modelF <- glm(formula = heart$target ~ heart$exang + heart$thalach, family = binomial(link = "logit"))
+summary(modelF)
+```
+
+3. Model G (Exang+Sex):
+```{r}
+modelG <- glm(formula = heart$target ~ heart$exang + heart$sex, family = binomial(link = "logit"))
+summary(modelG)
+```
+4. Model H (Exang+Age)
+```{r}
+modelH <- glm(formula = heart$target ~ heart$exang + heart$age, family = binomial(link = "logit"))
+summary(modelH)
+```
+5. Model I (Exang+FBS)
+```{r}
+modelI <- glm(formula = heart$target ~ heart$exang + heart$fbs, family = binomial(link = "logit"))
+summary(modelI)
+```
+6. Model J (Exang+Trest):
+```{r}
+modelJ <- glm(formula = heart$target ~ heart$exang + heart$trestbps, family = binomial(link = "logit"))
+summary(modelJ)
+```
+Predictor thalach has the least p-value, which is 5.12e-07. Thus we can attach thalach as a predictor for the model. 
+
+Then we try the next iteration:
+
+```{r}
+modelK <- glm(formula = heart$target ~ heart$exang + heart$thalach + heart$age, family = binomial(link = "logit"))
+modelL <- glm(formula = heart$target ~ heart$exang + heart$thalach + heart$sex, family = binomial(link = "logit"))
+modelM <- glm(formula = heart$target ~ heart$exang + heart$thalach + heart$trestbps, family = binomial(link = "logit"))
+modelN <- glm(formula = heart$target ~ heart$exang + heart$thalach + heart$chol, family = binomial(link = "logit"))
+modelO <- glm(formula = heart$target ~ heart$exang + heart$thalach + heart$fbs, family = binomial(link = "logit"))
+summary(modelK)
+summary(modelL)
+summary(modelM)
+summary(modelN)
+summary(modelO)
+```
+
+Sex predictor has the least p-value and it's the only one <0.001 while the rest all have p values all >0.001. Hence, we can stop here with exang, thalach and sex as our three final predictors to be included in the model.
+
 
 #Exercise 5: Are your final models from Exercises 1 and 4 the same? Are the final models from forward selection and backward elimination always the same? Please explain.
 
-The results differ from the original backward selection model. There is no guarantee that backward elimination and forward selection will arrive at the same final model.
+The results differ from the original backward selection model. There is no guarantee that backward elimination and forward selection will arrive at the same final model. 
 
 ```{r}
 print("Backward Elimination:  ")
 print(rsq(model5,data=heart))
 
-modelE <- glm(formula = heart$target ~ heart$exang)
+modelG <- glm(formula = heart$target ~ heart$exang + heart$sex)
 print("Forward Selection (Exang): ")
-```
+print(rsq(modelG,data=heart))
 
-
-```{r}
 ```
 As the Forward Selection model has the highest adjusted R-squared value, it should be used instead of the backward elimination model. 
