@@ -42,7 +42,7 @@ model3 <- glm(formula = heart$target ~ heart$sex + heart$trestbps + heart$chol +
 summary(model3)
 
 ```
-At this point, AGE seems to have the highest p-value and will be dropped. 
+At this point, chol seems to have the highest p-value and will be dropped. 
 
 ```{r}
 # REMOVE CHOL 
