@@ -1,0 +1,90 @@
+---
+title: "Lab5"
+author: "Dion, Julie, Mia, Vincent"
+date: "9/20/2019"
+output: 
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(lars)
+data(diabetes)
+object <- lars(x = diabetes$x, y = diabetes$y)
+plot(object)
+```
+
+# Exercise 1: Give a description of what the last plot means in relation to the lasso coefficient estimates and the lasso regularization parameter: What do the lines represent? How does the lasso regularization parameter vary with the x-axis?
+
+The plot illustrates how each of the predictor's coefficients change in response to a decrease in lasso regularization parameter. We can tell that the lasso regularization parameter decreases as the x-axis increases from 0 to 1. This is because we know that as regularization parameter increases, more and more coefficients are regularized into 0.
+
+Hence, with a lower lasso regularization parameter (from left to right of the plot), the standardized coefficients for all the predictors increase (from zero) and hence more predictors are included in the model. 
+
+# Exercise 2: The black dashed line in the last plot is not monotone: It first decreases and then starts to increase. What does this mean or what could be a reason for this?
+
+Not sure, will check with Prof. 
+
+# Exercise 3: Which 2 predictors are selected into the model first by lasso?
+
+```{r}
+coef(object)
+```
+
+BMI and LTG are the 2 predictors selected into the model first. 
+
+# Exercise 4: What does the argument nstart of the function kmeans represent? Why is it better to use nstart = 25 than the function's default of nstart = 1?
+
+By checking the documentation for kmeans function, we know that the argument nstart represents how many random sets should be chosen to run the k-means analysis. In other words, it specifies the number of attempting multiple initial configurations and reports on the best one. In our case, adding nstart = 25 will generate 25 initial random configurations of the centroids. 
+
+It is better to use nstart = 25 than the function's default of nstart = 1 because the process of initializing the starting centroids is random. More often than not, different initialization render rather different equilibrium. Hence comparing 25 different runs and obtaining the best one will very likely give us more accurate clustering than simply one attempt.
+
+# Exercise 5: Consider the data with as only the 2 variables that the lasso selected in Exercise 3. Pick a number k of clusters for your k-means analysis. Base your answer on the within sum of squares (WSS).
+
+```{r}
+kmdata <-  as.data.frame(diabetes[,c("x")][,c("bmi", "ltg")])
+
+wss <- numeric(15)
+for (k in 1:15) wss[k] <- sum(kmeans(kmdata,centers=k, nstart=25)$withinss)
+plot(1:15, wss, type="b", xlab="Number of Clusters", ylab="WSS")
+```
+
+We choose 3 to be the value k, as that point seems to be the "elbow" of the above WSS plot. The reduction in RSS from 1 to 2 and from 2 to 3 are fairly significant. The reduction in WSS is rather linear and not as drastic for k>3. 
+
+# Exercise 6: Visualize the results of the k-means analysis using the k chosen in Exercise 5. A suitable visualization is for instance Figure 4-6 from the textbook.
+
+```{r}
+km = kmeans(kmdata,3, nstart=25)
+km
+```
+
+```{r}
+df = as.data.frame(diabetes[,c("x")][,c("bmi", "ltg")])
+df$BMI = (df$x[,1])
+df$LTG = (df$x[,2])
+df$cluster = factor(km$cluster)
+centers=as.data.frame(km$centers)
+
+library(ggplot2)
+g1= ggplot(data=df, aes(x=BMI, y=LTG, color=cluster )) +
+geom_point() + theme(legend.position="right") +
+geom_point(data=centers,
+aes(x=x.bmi,y=x.ltg, color=as.factor(c(1,2,3))),
+size=10, alpha=.3, show.legend = FALSE)
+
+g1
+```
+
+
+# Exercise 7: Provide an interpretation of what each of the k clusters obtained in Exercise 6 mean.
+Cluster 1: Relatively lower serum concentration of lamorigine (LTG) and relatively lower body mass index (BMI) 
+
+Cluster 2: Relatively higher serum concentration of lamorigine (LTG) but relatively lower body mass index (BMI) 
+
+Cluster 3: Relatively higher serum concentration of lamorigine (LTG) and relatively higher body mass index (BMI) 
+
