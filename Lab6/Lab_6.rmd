@@ -22,13 +22,14 @@ plot(object)
 
 # Exercise 1: Give a description of what the last plot means in relation to the lasso coefficient estimates and the lasso regularization parameter: What do the lines represent? How does the lasso regularization parameter vary with the x-axis?
 
-The plot illustrates how each of the predictor's coefficients change in response to a decrease in the lasso regularization parameter. We can tell that the lasso regularization parameter decreases as the value in the x-axis increases from 0 to 1. This is because we know that as the regularization parameter increases, more and more coefficients are regularized to 0. The lines represent... 
+The plot illustrates how each of the predictor's coefficients change in response to a decrease in the lasso regularization parameter. We can tell that the lasso regularization parameter decreases as the value in the x-axis increases from 0 to 1. This is because we know that as the regularization parameter increases, more and more coefficients are regularized to 0, which can be observed in the plot. The points represent the different standardized coefficients for each regularization parameter; the line connects these points to show the change in the coefficients as the regularization parameter decreases.
 
 Hence, with a lower lasso regularization parameter (from left to right of the plot), the standardized coefficients for all the predictors increase (from zero) and hence more predictors are included in the model. 
 
 # Exercise 2: The black dashed line in the last plot is not monotone: It first decreases and then starts to increase. What does this mean or what could be a reason for this?
 
-Not sure, will check with Prof. 
+The black dashed line is not monotone because when the regularization parameter changes, there can be both an addition or removal of predictors. For example, the plot shows that variable 1 was included when there were four to nine variables included in the model, whereas it was removed for the models with ten and eleven variables included. 
+
 
 # Exercise 3: Which 2 predictors are selected into the model first by lasso?
 
