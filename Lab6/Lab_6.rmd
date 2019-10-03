@@ -1,5 +1,5 @@
 ---
-title: "Lab5"
+title: "Lab6"
 author: "Dion, Julie, Mia, Vincent"
 date: "9/20/2019"
 output: 
@@ -22,13 +22,13 @@ plot(object)
 
 # Exercise 1: Give a description of what the last plot means in relation to the lasso coefficient estimates and the lasso regularization parameter: What do the lines represent? How does the lasso regularization parameter vary with the x-axis?
 
-The plot illustrates how each of the predictor's coefficients change in response to a decrease in the lasso regularization parameter. We can tell that the lasso regularization parameter decreases as the value in the x-axis increases from 0 to 1. This is because we know that as the regularization parameter increases, more and more coefficients are regularized to 0, which can be observed in the plot. The points represent the different standardized coefficients for each regularization parameter; the line connects these points to show the change in the coefficients as the regularization parameter decreases.
+The plot illustrates how each of the predictor's standardised coefficient changes in response to a decrease in the lasso regularization parameter. We can tell that the lasso regularization parameter decreases as the value in the x-axis increases from 0 to 1 (left to right). This is because we know that as the regularization parameter increases (right to left), more and more coefficients are regularized to 0, which can be observed in the plot. As the lasso regularization parameter decreases, more standardized coefficients become non-zero and hence more predictors are included in the model.
 
-Hence, with a lower lasso regularization parameter (from left to right of the plot), the standardized coefficients for all the predictors increase (from zero) and hence more predictors are included in the model. 
+The points represent the different standardized coefficients for each regularization parameter; the line connects these points to show the average change in the coefficients as the regularization parameter decreases. The lines are important because as the number of predictors is increased, the average change in the coefficients as the regularization parameter decreases further changes.
 
 # Exercise 2: The black dashed line in the last plot is not monotone: It first decreases and then starts to increase. What does this mean or what could be a reason for this?
 
-The black dashed line is not monotone because when the regularization parameter changes, there can be both an addition or removal of predictors. For example, the plot shows that variable 1 was included when there were four to nine variables included in the model, whereas it was removed for the models with ten and eleven variables included. 
+The black dashed line not being monotone indicates that when the regularization parameter changes, there can be both an addition or removal of predictors. The plot shows that variable 1 was included when there were four to nine variables included in the model, whereas it was removed for the models with ten and eleven variables included. A possible reason for this is that variable 1 is highly correlated to other variables in the model. When those variables were included in the model, variable 1 was unimportant for the model to explain the variability in the data and was therefore removed by the regularisation. However, when the variables variable 1 is correlated to were themselves removed, variable 1 once again became important and was re-included.
 
 
 # Exercise 3: Which 2 predictors are selected into the model first by lasso?
@@ -41,9 +41,9 @@ BMI and LTG are the 2 predictors selected into the model first.
 
 # Exercise 4: What does the argument nstart of the function kmeans represent? Why is it better to use nstart = 25 than the function's default of nstart = 1?
 
-By checking the documentation for kmeans function, we know that the argument nstart represents how many random sets should be chosen to run the k-means analysis. In other words, it specifies the number of attempting multiple initial configurations and reports on the best one. In our case, adding nstart = 25 will generate 25 initial random configurations of the centroids. 
+By checking the documentation for kmeans function, we know that the argument nstart represents how many random sets should be chosen to run the k-means analysis. In other words, it specifies the number times k-means analysis will be performed with a different random initial configuration used each time. The function will report on the best (lowest within sum of squares) clustering. In our case, adding nstart = 25 will generate 25 initial random configurations of the centroids. 
 
-It is better to use nstart = 25 than the function's default of nstart = 1 because the process of initializing the starting centroids is random. More often than not, different initializations render rather different equilibria. Hence comparing 25 different runs and obtaining the best one will very likely give us a more accurate clustering than simply one attempt.
+It is better to use nstart = 25 than the function's default of nstart = 1 because the process of initializing the starting centroids is random and different initializations may render different clustering results. Hence comparing 25 different runs and obtaining the best one will very likely give us a more accurate clustering than simply one attempt. Of course, the computational cost will also be higher.
 
 # Exercise 5: Consider the data with as only the 2 variables that the lasso selected in Exercise 3. Pick a number k of clusters for your k-means analysis. Base your answer on the within sum of squares (WSS).
 
@@ -83,9 +83,9 @@ g1
 
 
 # Exercise 7: Provide an interpretation of what each of the k clusters obtained in Exercise 6 mean.
-Cluster 1 (red): Relatively higher serum concentration of lamorigine (LTG) but relatively lower body mass index (BMI) 
+Cluster 1 (red): Relatively low serum concentration of lamorigine (LTG) and relatively low body mass index (BMI). 
 
-Cluster 2 (green): Relatively higher serum concentration of lamorigine (LTG) and relatively higher body mass index (BMI) 
+Cluster 2 (green): Relatively high serum concentration of lamorigine (LTG) and average body mass index (BMI).
 
-Cluster 3 (blue): Relatively lower serum concentration of lamorigine (LTG) and relatively lower body mass index (BMI) 
+Cluster 3 (blue): Relatively high serum concentration of lamorigine (LTG) and relatively high body mass index (BMI).
 
