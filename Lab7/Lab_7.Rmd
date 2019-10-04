@@ -1,0 +1,43 @@
+---
+title: "Lab7"
+author: "Dion, Julie, Mia, Vincent"
+date: "9/20/2019"
+output: 
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(FSelectorRcpp)
+```
+
+```{r}
+data <- read.csv("Mall_customers.csv")
+names(data)[4:5] <- c("Annual.Income", "Spending.Score")
+```
+
+
+```{r}
+```
+
+- function that computes the entropy --> conditional entropy, IG
+
+# Exercise 1: Compute the information gain in the outcome due to knowing whether someone is older than 36 or not.
+
+
+# Exercise 2: Compute the information gain in the outcome due to knowing whether someone’s annual income is above $50,000 or not.
+
+
+# Exercise 3: Are the information gains in Exercises 2 and 3 like you would have expected? Why or why not? Could EDA have avoided any surprises here?
+
+
+# Exercise 4: Perform k-means clustering on age, annual income, and the spending score. Explain your choice of k, visualize your results, and interpret the clusters. Make sure your analysis does not depend on the unit of measurements of the variables.
+
+
+# Exercise 5: How does your k-means analysis compare to Section 3 (Segmentation using Age , Annual Income and Spending Score) from https://www.kaggle.com/kushal1996/customer-segmentation-k-means-analysis?
+
+
+
+
