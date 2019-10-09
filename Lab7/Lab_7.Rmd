@@ -10,20 +10,72 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+<<<<<<< Updated upstream
+=======
+library(FSelectorRcpp)
+library(dplyr)
+>>>>>>> Stashed changes
 ```
+
+
+This lab considers the Kaggle dataset Mall Customer Segmentation Data https://www.kaggle.com/vjchoudhary7/customer-segmentation-tutorial-in-python which is posted as Mall_Customers.csv on Canvas.
+
+For Exercises 1 through 3, consider whether the spending score is greater than 50 as outcome. Use the natural logarithm in your computations, not the log with base 2 like in the textbook. The R function log computes the natural logarithm by default.
+
 
 ```{r}
 data <- read.csv("Mall_customers.csv")
 names(data)[4:5] <- c("Annual.Income", "Spending.Score")
 ```
 
-
-```{r}
-```
-
+general notes:
 - function that computes the entropy --> conditional entropy, IG
+- entropy ranges from 0 to log(n), n = no. of outcomes
 
 # Exercise 1: Compute the information gain in the outcome due to knowing whether someone is older than 36 or not.
+
+First, we create a function that computes entropy, $H_Y$:
+```{r}
+entropy_func <- function(Y) {
+  probs <- prop.table(table(Y))
+  n <- length(probs)
+  result <- rep_len(0, n)
+  for (y in seq_len(n)) {
+    result[y] <- probs[y] * log(probs[y])
+  }
+  -sum(result)
+}
+```
+
+
+Now, we must compute conditional entropy, $H_{Y \vert X}$. To compute this, we first obtain the probability of the condition (someone being older than 36), $P(X)$.
+```{r}
+table(data$Age > 36) / length(data$Age)
+```
+
+
+
+
+
+
+
+```{r}
+
+
+
+
+data %>%
+  summarize(prob = sum(Age > 36 & Spending.Score == 2) / sum(Age > 36))
+
+
+# prob age > 36
+length(which(data$Age > 36)) / length(data$Age)
+
+# prob age <= 36
+length(which(data$Age <= 36)) / length(data$Age)
+
+
+```
 
 
 # Exercise 2: Compute the information gain in the outcome due to knowing whether someone’s annual income is above $50,000 or not.
