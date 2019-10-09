@@ -10,11 +10,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-<<<<<<< Updated upstream
-=======
-library(FSelectorRcpp)
 library(dplyr)
->>>>>>> Stashed changes
 ```
 
 
@@ -28,9 +24,7 @@ data <- read.csv("Mall_customers.csv")
 names(data)[4:5] <- c("Annual.Income", "Spending.Score")
 ```
 
-general notes:
-- function that computes the entropy --> conditional entropy, IG
-- entropy ranges from 0 to log(n), n = no. of outcomes
+
 
 # Exercise 1: Compute the information gain in the outcome due to knowing whether someone is older than 36 or not.
 
@@ -45,43 +39,108 @@ entropy_func <- function(Y) {
   }
   -sum(result)
 }
+
+h_y <- entropy_func(data$Spending.Score > 50)
+h_y
 ```
 
 
 Now, we must compute conditional entropy, $H_{Y \vert X}$. To compute this, we first obtain the probability of the condition (someone being older than 36), $P(X)$.
 ```{r}
-table(data$Age > 36) / length(data$Age)
+p_x <- table(data$Age > 36) / length(data$Age)
+p_x
 ```
 
+Thus, the probability of someone being older than 36, $P(X=1)$, equals 0.48 and the probability of someone being 36 and younger, $P(X=0)$, equals 0.52.
 
-
-
-
-
+Then, we compute $P(Y\vert X=0)$ and $P(Y \vert X=1)$.
 
 ```{r}
-
-
-
-
-data %>%
-  summarize(prob = sum(Age > 36 & Spending.Score == 2) / sum(Age > 36))
-
-
-# prob age > 36
-length(which(data$Age > 36)) / length(data$Age)
-
-# prob age <= 36
-length(which(data$Age <= 36)) / length(data$Age)
-
-
+p_ycondx <- c(
+  data %>% # Y=1, X=1
+    summarize(y1x1 = sum(Age > 36 & Spending.Score > 50) / sum(Age > 36)),
+  data %>% # Y=0, X=1
+    summarize(y0x1 = sum(Age > 36 & Spending.Score <= 50) / sum(Age > 36)),
+  data %>% # Y=1, X=0
+    summarize(y1x0 = sum(Age <= 36 & Spending.Score > 50) / sum(Age <= 36)),
+  data %>% # Y=0, X=0
+    summarize(y0x0 = sum(Age <= 36 & Spending.Score <= 50) / sum(Age <= 36)))
+p_ycondx
 ```
+
+
+Then, we apply the formula for conditional entropy, $$H_{Y \vert X}=-\sum_{\forall x \in X} P(x) \sum_{\forall y \in Y} P(y\vert x)log P(y\vert x).$$
+
+```{r}
+h_ycondx <- -1*sum(0.52 * 
+                     (p_ycondx[["y0x0"]] * log(p_ycondx[["y0x0"]]) +
+                        p_ycondx[["y1x0"]] * log(p_ycondx[["y1x0"]])),
+                   0.48 *
+                     (p_ycondx[["y0x1"]] * log(p_ycondx[["y0x1"]]) +
+                        p_ycondx[["y1x1"]] * log(p_ycondx[["y1x1"]])))
+h_ycondx
+```
+
+Hence, the information gain is:
+```{r}
+h_y - h_ycondx
+```
+
+
 
 
 # Exercise 2: Compute the information gain in the outcome due to knowing whether someone’s annual income is above $50,000 or not.
 
+We go through the same process as in Ex. 1, with the condition now being whether someone's annual income is above $50,000 or not. 
+
+Computing $P(X)$:
+```{r}
+p_x2 <- table(data$Annual.Income > 50) / length(data$Annual.Income)
+p_x2
+```
+
+Thus, the probability of someone's annual income being above \$50,000, $P(X=1)$, equals 0.63 and the probability of someone's annual income being below \$50,000, $P(X=0)$, equals 0.37.
+
+Then, we compute $P(Y\vert X=0)$ and $P(Y \vert X=1)$.
+
+```{r}
+p_ycondx2 <- c(
+  data %>% # Y=1, X=1
+    summarize(y1x1 = sum(Annual.Income > 50 & Spending.Score > 50) / sum(Annual.Income > 50)),
+  data %>% # Y=0, X=1
+    summarize(y0x1 = sum(Annual.Income > 50 & Spending.Score <= 50) / sum(Annual.Income > 50)),
+  data %>% # Y=1, X=0
+    summarize(y1x0 = sum(Annual.Income <= 50 & Spending.Score > 50) / sum(Annual.Income <= 50)),
+  data %>% # Y=0, X=0
+    summarize(y0x0 = sum(Annual.Income <= 50 & Spending.Score <= 50) / sum(Annual.Income <= 50)))
+p_ycondx2
+```
+
+
+Then, we apply the formula for conditional entropy:
+```{r}
+h_ycondx2 <- (-1)*sum(0.37 * 
+                     (p_ycondx2[["y0x0"]] * log(p_ycondx2[["y0x0"]]) +
+                        p_ycondx2[["y1x0"]] * log(p_ycondx2[["y1x0"]])),
+                   0.63 *
+                     (p_ycondx2[["y0x1"]] * log(p_ycondx2[["y0x1"]]) +
+                        p_ycondx2[["y1x1"]] * log(p_ycondx2[["y1x1"]])))
+h_ycondx2
+```
+
+Hence, the information gain is:
+```{r}
+h_y - h_ycondx2
+```
+
+
+
 
 # Exercise 3: Are the information gains in Exercises 2 and 3 like you would have expected? Why or why not? Could EDA have avoided any surprises here?
+
+The information gain is higher when knowing whether someone is older than 36 (Ex. 1) than when knowing whether someone's annual income is higher than \$50,000 (Ex. 2). This is surprising because spending score is more directly correlated with annual income than with age, meaning that knowing someone's annual income would give you more information about someone's spending score....
+
+
 
 
 # Exercise 4: Perform k-means clustering on age, annual income, and the spending score. Explain your choice of k, visualize your results, and interpret the clusters. Make sure your analysis does not depend on the unit of measurements of the variables.
@@ -112,13 +171,15 @@ df = as.data.frame(kmdata)
 df$cluster = factor(km$cluster)
 centers=as.data.frame(km$centers)
 
+set.seed(1)
+
 g1 = ggplot(data=df, aes(x=Age, y=Annual.Income, color=cluster )) +
   geom_point() + theme(legend.position="right") +
   geom_point(data=centers,
              aes(x=Age,y=Annual.Income, color=as.factor(c(1,2,3,4))),
              size=10, alpha=.3, show.legend =FALSE)
 
-g2 =ggplot(data=df, aes(x=Age, y=Spending.Score, color=cluster )) +
+g2 = ggplot(data=df, aes(x=Age, y=Spending.Score, color=cluster )) +
   geom_point() +
   geom_point(data=centers,
              aes(x=Age,y=Spending.Score, color=as.factor(c(1,2,3,4))),
