@@ -10,7 +10,6 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(FSelectorRcpp)
 ```
 
 ```{r}
@@ -34,6 +33,54 @@ names(data)[4:5] <- c("Annual.Income", "Spending.Score")
 
 
 # Exercise 4: Perform k-means clustering on age, annual income, and the spending score. Explain your choice of k, visualize your results, and interpret the clusters. Make sure your analysis does not depend on the unit of measurements of the variables.
+
+We start by subsetting the data and standardize each variable. Then we plot WSS against the number of clusters to determine a optimal value for k based on the plot. 
+```{r}
+kmdata <-  as.data.frame(data[c("Age", "Annual.Income", "Spending.Score")])
+kmdata$Age <- kmdata$Age/(sd(kmdata$Age))
+kmdata$Annual.Income <- kmdata$Annual.Income/(sd(kmdata$Annual.Income))
+kmdata$Spending.Score <- kmdata$Spending.Score/(sd(kmdata$Spending.Score))
+
+wss <- numeric(15)
+for (k in 1:15) 
+  wss[k] <- sum(kmeans(kmdata,centers=k, nstart=25)$withinss)
+plot(1:15, wss, type="b", xlab="Number of Clusters", ylab="WSS")
+```
+
+k=4 seems to be the elbow of the WSS plot. So we choose k=4 to run the kmean analysis.  We run the kmean analysis below. 
+
+```{r}
+km <- kmeans(kmdata,4, nstart=25)
+km
+```
+
+```{r}
+library(ggplot2)
+df = as.data.frame(kmdata)
+df$cluster = factor(km$cluster)
+centers=as.data.frame(km$centers)
+
+g1 = ggplot(data=df, aes(x=Age, y=Annual.Income, color=cluster )) +
+  geom_point() + theme(legend.position="right") +
+  geom_point(data=centers,
+             aes(x=Age,y=Annual.Income, color=as.factor(c(1,2,3,4))),
+             size=10, alpha=.3, show.legend =FALSE)
+
+g2 =ggplot(data=df, aes(x=Age, y=Spending.Score, color=cluster )) +
+  geom_point() +
+  geom_point(data=centers,
+             aes(x=Age,y=Spending.Score, color=as.factor(c(1,2,3,4))),
+             size=10, alpha=.3, show.legend=FALSE)
+
+g3 = ggplot(data=df, aes(x=Annual.Income, y=Spending.Score, color=cluster )) +
+  geom_point() +
+  geom_point(data=centers,
+             aes(x=Annual.Income,y=Spending.Score, color=as.factor(c(1,2,3,4))),
+             size=10, alpha=.3, show.legend=FALSE)
+g1
+g2
+g3
+```
 
 
 # Exercise 5: How does your k-means analysis compare to Section 3 (Segmentation using Age , Annual Income and Spending Score) from https://www.kaggle.com/kushal1996/customer-segmentation-k-means-analysis?
