@@ -85,6 +85,6 @@ g3
 
 # Exercise 5: How does your k-means analysis compare to Section 3 (Segmentation using Age , Annual Income and Spending Score) from https://www.kaggle.com/kushal1996/customer-segmentation-k-means-analysis?
 
-
+It show pretty different results, which mainly arise from a different choice of k. In this article, a k=6 is chosen. 
 
 
