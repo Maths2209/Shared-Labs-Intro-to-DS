@@ -25,7 +25,6 @@ names(data)[4:5] <- c("Annual.Income", "Spending.Score")
 ```
 
 
-
 # Exercise 1: Compute the information gain in the outcome due to knowing whether someone is older than 36 or not.
 
 First, we create a function that computes entropy, $H_Y$:
@@ -88,8 +87,7 @@ h_y - h_ycondx
 
 
 
-
-# Exercise 2: Compute the information gain in the outcome due to knowing whether someone’s annual income is above $50,000 or not.
+# Exercise 2: Compute the information gain in the outcome due to knowing whether someone's annual income is above $50,000 or not.
 
 We go through the same process as in Ex. 1, with the condition now being whether someone's annual income is above $50,000 or not. 
 
