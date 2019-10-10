@@ -69,7 +69,7 @@ p_ycondx
 ```
 
 
-Then, we apply the formula for conditional entropy, $$H_{Y \vert X}=-\sum_{\forall x \in X} P(x) \sum_{\forall y \in Y} P(y\vert x)log P(y\vert x).$$
+Then, we apply the formula for conditional entropy, $$H_{Y \vert X}=-\sum_{\forall x \in X} P(x) \sum_{\forall y \in Y} P(y\vert x)\log P(y\vert x).$$
 
 ```{r}
 h_ycondx <- -1*sum(0.52 * 
@@ -138,9 +138,18 @@ h_y - h_ycondx2
 
 # Exercise 3: Are the information gains in Exercises 2 and 3 like you would have expected? Why or why not? Could EDA have avoided any surprises here?
 
-The information gain is higher when knowing whether someone is older than 36 (Ex. 1) than when knowing whether someone's annual income is higher than \$50,000 (Ex. 2). This is surprising because spending score is more directly correlated with annual income than with age, meaning that knowing someone's annual income would give you more information about someone's spending score....
+The information gain is higher when knowing whether someone is older than 36 (Ex. 1) than when knowing whether someone's annual income is higher than \$50,000 (Ex. 2). This is surprising because we expected spending score to have a greater correlation with annual income than with age, meaning that knowing someone's annual income should have given more information about someone's spending score. EDA could have avoided surprises here by first investigating the correlation between spending score and each of the predictors. 
+
+```{r}
+summary(lm(data$Spending.Score ~ data$Annual.Income))
+```
+
+```{r}
+summary(lm(data$Spending.Score ~ data$Age))
+```
 
 
+As it turns out, our expectation of the correlation is wrong. In fact, spending score is more stongly linearly correlated with age (adjusted r-squared value of 0.1026) than with annual income (adjusted r-squared value of -0.004952).
 
 
 # Exercise 4: Perform k-means clustering on age, annual income, and the spending score. Explain your choice of k, visualize your results, and interpret the clusters. Make sure your analysis does not depend on the unit of measurements of the variables.
