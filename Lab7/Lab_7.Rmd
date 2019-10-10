@@ -147,12 +147,12 @@ summary(lm(data$Spending.Score ~ data$Age))
 ```
 
 
-As it turns out, our expectation of the correlation is wrong. In fact, spending score is more stongly linearly correlated with age (adjusted r-squared value of 0.1026) than with annual income (adjusted r-squared value of -0.004952).
+As it turns out, our expectation of the correlation is wrong. In fact, spending score is more strongly linearly correlated with age (adjusted r-squared value of 0.1026) than with annual income (adjusted r-squared value of -0.004952).
 
 
-# Exercise 4: Perform k-means clustering on age, annual income, and the spending score. Explain your choice of k, visualize your results, and interpret the clusters. Make sure your analysis does not depend on the unit of measurements of the variables.
+# Exercise 4: Perform $k$-means clustering on age, annual income, and the spending score. Explain your choice of k, visualize your results, and interpret the clusters. Make sure your analysis does not depend on the unit of measurements of the variables.
 
-We start by subsetting the data and standardize each variable. Then we plot WSS against the number of clusters to determine a optimal value for k based on the plot. 
+We start by subsetting the data and standardizing each variable. Then we plot the WSS against the number of clusters to determine a optimal value for $k$.
 ```{r}
 kmdata <-  as.data.frame(data[c("Age", "Annual.Income", "Spending.Score")])
 kmdata$Age <- kmdata$Age/(sd(kmdata$Age))
@@ -165,7 +165,7 @@ for (k in 1:15)
 plot(1:15, wss, type="b", xlab="Number of Clusters", ylab="WSS")
 ```
 
-k=4 seems to be the elbow of the WSS plot. So we choose k=4 to run the kmean analysis.  We run the kmean analysis below. 
+$k=4$ appear to be the elbow of the WSS plot. So we will run the k-means clustering algorithm with $k=4$.
 
 ```{r}
 km <- kmeans(kmdata,4, nstart=25)
@@ -210,8 +210,6 @@ Cluster 3: high-income, low-spending mid-aged adults
 
 Cluster 4: low-income, high-spending youngsters
 
-# Exercise 5: How does your k-means analysis compare to Section 3 (Segmentation using Age , Annual Income and Spending Score) from https://www.kaggle.com/kushal1996/customer-segmentation-k-means-analysis?
+# Exercise 5: How does your $k$-means analysis compare to Section 3 (Segmentation using Age, Annual Income and Spending Score) from https://www.kaggle.com/kushal1996/customer-segmentation-k-means-analysis?
 
-It show pretty different results, which mainly arise from a different choice of k. In this article, a k=6 is chosen, which is arguably inappropriate given that it is hardly the elbow of the inertia plot. Another difference is in terms of the visualization technique chosen: the article chose a  3D visualization with all three varibales, while ours entails 3 separate plots of 2 variables against each other. Arguably, ours is clearer and more helpful in helping us determine the meaning and significance of each cluster while the clustering shown in the article is confusing and even counterproductive since it is hard to make sense of the groupings just based off it. 
-
-
+The results appear quite different, which mainly arise from a different choice of $k$. In the article, $k=6$ is chosen, which is arguably inappropriate given that it is hardly the elbow of the inertia plot. Another difference is in terms of the visualization technique chosen: the article chose a  3D visualization with all three variables, whereas we used 3 separate plots of 2 variables against each other. Arguably, ours is clearer and more helpful in helping us determine the meaning and significance of each cluster while the clustering shown in the article is confusing since it is hard to make sense of the groupings just based off it. On the other hand, the representation of our clustering results in 2D may cause also some confusion since in some areas of the plot, points belonging to different clusters are interspersed; this is not possible if there are only 2 attributes in the clustering. 
