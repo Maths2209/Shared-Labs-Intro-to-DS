@@ -1,0 +1,63 @@
+---
+title: "Project Proposal"
+author: "Dion, Julie, Mia, Vincent"
+date: "17/10/2019"
+output: 
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+pokemon <- read.csv("pokemon.csv")
+```
+Our data frame is massive with 801 observations of 41 variables. Therefore our first order of business will be to remove unnecessary data.
+
+```{r}
+pokemon_trimmed <- subset(pokemon, select = -c(1, 21, 22, 24, 27, 30, 31, 32))
+pokemon_trimmed <- pokemon_trimmed[,c(25,1:24,26:33)]
+```
+
+We will remove the following data: abilities, base egg steps, base happiness, capture rate, experience growth, japanese name, name, and percentage male. We will identify / index each pokemon with their pokedex number and that column is moved to the leftmost position of our data frame.
+
+```{r}
+summary(complete.cases(pokemon_trimmed))
+```
+
+Note that 20 pokemon in our data set have incomplete entries (their height and weight data are missing).
+
+```{r}
+unique(unlist(pokemon[,2:19]))
+```
+
+Columns 2 to 19 (against [type]) and column 32 (generation) have quantitative categorical data. We will term the row sum across columns 2 to 19 "Total Resistance". We will visualise these data using a histogram.
+
+```{r}
+hist(rowSums(pokemon_trimmed[,2:19]), main = "Histogram of Total Resistances", xlab = "Total Resistance")
+hist(pokemon_trimmed[,32], main = "Histogram of Generations", xlab = "Generation")
+```
+
+We can see that our total resistance data is approximately normally distributed except for a large number of pokemon with a total resistance of between 17 and 18, which makes the distribution slightly right-skewed. Our generation data is approximately uniformly distributed except for a smaller than average number of generation 6 and 7 pokemon.
+
+Columns 22 (classification), 29 (type1), and 30 (type2) have qualitative categorical data. Column 33 (is_legendary) has binary data. We will use the "summary" function on these.
+
+```{r}
+summary(pokemon_trimmed[,c(22,29,30)])
+summary(pokemon_trimmed[,33]==1)
+```
+
+Most of our pokemon are non-legendary (as to be expected) with a classification, type1 or type2 of "(Other)". The variable "classification" especially may not be very informative since a great majority of the pokemon are listed under "(Other)" with less than 10 pokemon in each of the non-other categories.
+
+All other columns have continuous quantitative data. We will use the "summary" function on these (except for the index: pokedex number) and also visualise the data using a scatterplot matrix.
+
+```{r}
+cont_pokemon <- subset(pokemon_trimmed, select = -c(1,2:19,22,29,30,32,33))
+pairs(cont_pokemon)
+summary(cont_pokemon)
+```
+
+From the scatterplot matrix it seems like many of the continuous variables may be linearly correlated. For example, the variable "base_total" appears to be linearly correlated with every other continuous variable.
