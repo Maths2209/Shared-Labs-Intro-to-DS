@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 The dataset we have chosen to explore is **"The Complete Pokemon Dataset"** on Kaggle. It is under the Creative Commons Public Domain license, so we are completely free to use the data in any way we'd like. https://www.kaggle.com/rounakbanik/pokemon 
 
-As the name of the dataset suggests, the data covers information on 802 different Pokemon from the seven generations of Pokemon.
+As the name of the dataset suggests, the data covers information on 802 different Pokemon from the seven generations of Pokemon. Each row of the dataset represents a Pokemon and there are 41 variables representing its different properties and powers, including its name, height, weight, base HP, abilities, etc. 
 
 
 
