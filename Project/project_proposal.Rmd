@@ -19,9 +19,24 @@ The dataset we have chosen to explore is **"The Complete Pokemon Dataset"** on K
 As the name of the dataset suggests, the data covers information on 802 different Pokemon from the seven generations of Pokemon. Each row of the dataset represents a Pokemon and there are 41 variables representing its different properties and powers, including its name, height, weight, base HP, abilities, etc. 
 
 
-
 # Research Questions
 
+There are 3 main questions we would like to cover in this project. 
+
+1) What is the correlation between height and weight of a Pokemon with its base stats?
+
+Rationale: It is often speculated that a bigger and taller Pokemon generally translates into better base stats. How true is that? Or maybe height and weight does not make a difference at all? We are eager to find out.   
+
+2) Is it possible to build a classifier to identify legendary Pokemon? Which classification method, logistic regression or decision tree, is the more suitable and accurate one?
+
+Rationale: An essential element of playing Pokemon is to encounter and collect legendary Pokemon. However, as one gets older and more isolated from the latest trend in Pokemon, it is not immediately obvious if a certain Pokemon is legendary or not. Thus, it would be helpful to have a classifier to tell us that based on the traits exhibited in a variety of predictors.
+
+3) If you were to win in a Pokemon league, what would be your chosen six? 
+
+Rationale: For avid Pokemon players, nothing is more exciting than winning the final Pokemon league. This begs the question: what would be the best combination of 6 Pokemon to win against any other combinations? We might have to look into a variety of importants variables here when building our model, such as type, type_against, hp, attack, defense, sp_attack, sp_defense, speed and so on. 
+
+
+2)
 
 
 # Exploratory Data Analysis 
@@ -116,7 +131,7 @@ As a group, we have decided to meet every Thursday, 6pm-7pm to discuss progress 
 ## Teamwork:
 We predict an equal share of the work taken on by all team members, adjusted to their relative time constraints and their capacities.
 
-*Vincent*: Will help out in the creation of classification techniques in Weeks 10-11.
+*Vincent*: As an MCS major, Vincent Will help out in the creation of classification techniques in Weeks 10-11.
 
 *Mia*: Will be involved in the preprocessing of the dataset, diagnostics on the effectiveness of the classification after the code is written by other team members, and the background research on the relative effectiveness of these techniques using Kaggle and existing resources provided by Professor Willem Van Den Boom.
 
