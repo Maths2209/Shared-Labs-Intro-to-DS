@@ -12,6 +12,20 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Data
+
+The dataset we have chosen to explore is **"The Complete Pokemon Dataset"** on Kaggle. It is under the Creative Commons Public Domain license, so we are completely free to use the data in any way we'd like. https://www.kaggle.com/rounakbanik/pokemon 
+
+As the name of the dataset suggests, the data covers information on 802 different Pokemon from the seven generations of Pokemon.
+
+
+
+# Research Questions
+
+
+
+# Exploratory Data Analysis 
+
 ```{r}
 pokemon <- read.csv("pokemon.csv")
 ```
@@ -61,3 +75,51 @@ summary(cont_pokemon)
 ```
 
 From the scatterplot matrix it seems like many of the continuous variables may be linearly correlated. For example, the variable "base_total" appears to be linearly correlated with every other continuous variable.
+
+# Timeline of Group Project 
+
+As a group, we have decided to meet every Thursday, 6pm-7pm to discuss progress on the group project with a specific agenda outlined in the timeline. 
+
+## 1. Week 10 (17th-24th October):
+
+* What are the main classifications we can use to answer our possible research questions?:
+  
+    + **Vincent, Mia**: Look at the possibility of decision trees, and discuss issues with overfitting. 
+  
+    + **Julie, Dion**: Look into the possibility of k-means clustering, taking into account standardization of attributes.
+  
+* **During Meeting**: Discuss the output derived during the week, and discuss the potential weaknesses of each strategy.
+
+## 2. Week 11 (25th-31st October):
+  Having decided the main classification techniques, and possibly exploring other methods, we will work on ensuring the model 
+  has useful predictors that we can use for our final group presentation in November. 
+  **NOTE**: Public holiday during 28th October, for Deepavali (Mia will not be available)
+
+* __Julie, Mia__: Look up Kaggle datasets that approximate our chosen model, and compare the existing work made by teammates 
+
+* __Vincent,Dion__: Depending on availability, consult with Prof Willem on the code for the process and seek some feedback.
+  
+## 3. Week 12 (1st-8 Nov):
+  As this is before a lot of final mid-terms for all group mates (who have shared their dates with each other), the focus will be to finish the bulk of the presentation and the diagnostics for the presentation.
+  
+* __Vincent, Mia__: Will structure and organize the aesthetics for the presentation. 
+
+* __Julie, Dion__: Will evaluate, improve and finalize the code for the presentation.
+  
+  As a group, we will discuss and finalize the research conclusion and additional insights we have gleaned from the process. 
+
+## 4. Week 13 (9th -15 Nov):
+  Final Group Huddle on Thursday before the final presentation on **Friday, 15th November**. 
+  We will conduct a timed rehearsal with allocation of parts to ensure equal participation in the presentation.
+  We will self-evaluate on whether the presentation is too long, the clarity of the content, etc. 
+
+## Teamwork:
+We predict an equal share of the work taken on by all team members, adjusted to their relative time constraints and their capacities.
+
+*Vincent*: Will help out in the creation of classification techniques in Weeks 10-11.
+
+*Mia*: Will be involved in the preprocessing of the dataset, diagnostics on the effectiveness of the classification after the code is written by other team members, and the background research on the relative effectiveness of these techniques using Kaggle and existing resources provided by Professor Willem Van Den Boom.
+
+*Julie*: As an MCS Major, Julie will help with the creation of the classification techniques and also the creation of the presentation for the final group presentation on November 15th.
+
+*Dion*: Also as an MCS Major, Dion will contribute to the EDA and improving the clarity and efficiency of the code we will present during the final presentation. 
