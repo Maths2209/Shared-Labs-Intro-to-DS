@@ -1,7 +1,6 @@
 ---
 title: "Project Proposal"
 author: "Dion, Julie, Mia, Vincent"
-date: "17/10/2019"
 output: 
     prettydoc::html_pretty:
     theme: cayman
@@ -12,14 +11,14 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Data
+## Data
 
 The dataset we have chosen to explore is **"The Complete Pokemon Dataset"** on Kaggle. It is under the Creative Commons Public Domain license, so we are completely free to use the data in any way we'd like. https://www.kaggle.com/rounakbanik/pokemon 
 
 As the name of the dataset suggests, the data covers information on 802 different Pokemon from the seven generations of Pokemon. Each row of the dataset represents a Pokemon and there are 41 variables representing its different properties and powers, including its name, height, weight, base HP, abilities, etc. 
 
 
-# Research Questions
+## Research Questions
 
 There are 3 main questions we would like to cover in this project. 
 
@@ -33,42 +32,36 @@ Rationale: An essential element of playing Pokemon is to encounter and collect l
 
 3) If you were to win in a Pokemon league, what would be your chosen six? 
 
-Rationale: For avid Pokemon players, nothing is more exciting than winning the final Pokemon league. This begs the question: what would be the best combination of 6 Pokemon to win against any other combinations? We might have to look into a variety of importants variables here when building our model, such as type, type_against, hp, attack, defense, sp_attack, sp_defense, speed and so on. 
+Rationale: For avid Pokemon players, nothing is more exciting than building the ultimate team. We will look into a variety of importants variables here when building our model, such as type, type_against, hp, attack, defense, sp_attack, sp_defense, speed and so on. 
 
 
 
-# Exploratory Data Analysis 
+## Exploratory Data Analysis 
 
 ```{r}
 pokemon <- read.csv("pokemon.csv")
 ```
-Our data frame is massive with 801 observations of 41 variables. Therefore our first order of business will be to remove unnecessary data.
+Our data frame is massive with 801 observations of 41 variables. Therefore we will first remove unnecessary data.
 
 ```{r}
 pokemon_trimmed <- subset(pokemon, select = -c(1, 21, 22, 24, 27, 30, 31, 32))
 pokemon_trimmed <- pokemon_trimmed[,c(25,1:24,26:33)]
 ```
 
-We will remove the following data: abilities, base egg steps, base happiness, capture rate, experience growth, japanese name, name, and percentage male. We will identify / index each pokemon with their pokedex number and that column is moved to the leftmost position of our data frame.
-
-```{r}
-summary(complete.cases(pokemon_trimmed))
-```
-
-Note that 20 pokemon in our data set have incomplete entries (their height and weight data are missing).
+We will remove the following data: abilities, base egg steps, base happiness, capture rate, experience growth, japanese name, name, and percentage male. We will index each pokemon with their pokedex number and move that column to the leftmost position.
 
 ```{r}
 unique(unlist(pokemon[,2:19]))
 ```
 
-Columns 2 to 19 (against [type]) and column 32 (generation) have quantitative categorical data. We will term the row sum across columns 2 to 19 "Total Resistance". We will visualise these data using a histogram.
+Columns 2 to 19 (against [type]) and column 32 (generation) have quantitative categorical data. We will term the row sum across columns 2 to 19 "Total Resistance" and visualise the data using a histogram.
 
 ```{r}
 hist(rowSums(pokemon_trimmed[,2:19]), main = "Histogram of Total Resistances", xlab = "Total Resistance")
 hist(pokemon_trimmed[,32], main = "Histogram of Generations", xlab = "Generation")
 ```
 
-We can see that our total resistance data is approximately normally distributed except for a large number of pokemon with a total resistance of between 17 and 18, which makes the distribution slightly right-skewed. Our generation data is approximately uniformly distributed except for a smaller than average number of generation 6 and 7 pokemon.
+Our total resistance data is approximately normally distributed except for a large number of pokemon with a total resistance of between 17 and 18, which makes the distribution slightly right-skewed. Our generation data is approximately uniformly distributed except for a smaller than average number of generation 6 and 7 pokemon. 
 
 Columns 22 (classification), 29 (type1), and 30 (type2) have qualitative categorical data. Column 33 (is_legendary) has binary data. We will use the "summary" function on these.
 
@@ -79,60 +72,42 @@ summary(pokemon_trimmed[,33]==1)
 
 Most of our pokemon are non-legendary (as to be expected) with a classification, type1 or type2 of "(Other)". The variable "classification" especially may not be very informative since a great majority of the pokemon are listed under "(Other)" with less than 10 pokemon in each of the non-other categories.
 
-All other columns have continuous quantitative data. We will use the "summary" function on these (except for the index: pokedex number) and also visualise the data using a scatterplot matrix.
+All other columns have continuous quantitative data. We will visualise these with a scatterplot matrix (except for the index: pokedex number).
 
 ```{r}
 cont_pokemon <- subset(pokemon_trimmed, select = -c(1,2:19,22,29,30,32,33))
 pairs(cont_pokemon)
-summary(cont_pokemon)
 ```
 
 From the scatterplot matrix it seems like many of the continuous variables may be linearly correlated. For example, the variable "base_total" appears to be linearly correlated with every other continuous variable.
 
-# Timeline of Group Project 
+## Timeline of Group Project 
 
 As a group, we have decided to meet every Thursday, 6pm-7pm to discuss progress on the group project with a specific agenda outlined in the timeline. 
 
-## 1. Week 10 (17th-24th October):
+### 1. Week 10 (17th-24th October):
 
-* What are the main classifications we can use to answer our possible research questions?:
+What are the main classifications we can use to answer our possible research questions?:
   
-    + **Vincent, Mia**: Look at the possibility of decision trees, and discuss issues with overfitting. 
+  **Vincent, Mia**: Look at the possibility of decision trees, and discuss issues with overfitting. **Julie, Dion**: Look into the possibility of k-means clustering, taking into account standardization of attributes.
+
+### 2. Week 11 (25th-31st October):
+  Having decided the main classification techniques, and possibly exploring other methods, we will work on ensuring the model has useful predictors that we can use for our final group presentation in November.
+
+**Julie, Mia**: Look up Kaggle datasets that approximate our chosen model, and compare the existing work made by teammates. **Vincent, Dion**: Depending on availability, consult with Prof Willem on the code for the process and seek some feedback.
   
-    + **Julie, Dion**: Look into the possibility of k-means clustering, taking into account standardization of attributes.
+### 3. Week 12 (1st-8 Nov):
+  As this is before a lot of final mid-terms for all group mates (who have shared their dates with each other), the focus will be to finish the bulk of the presentation and the diagnostics for the presentation. We will also have ad hoc rehearsals in the remaining time.
   
-* **During Meeting**: Discuss the output derived during the week, and discuss the potential weaknesses of each strategy.
+**Vincent, Mia**: Will structure and organize the aesthetics for the presentation. **Julie, Dion**: Will evaluate, improve and finalize the code for the presentation.
 
-## 2. Week 11 (25th-31st October):
-  Having decided the main classification techniques, and possibly exploring other methods, we will work on ensuring the model 
-  has useful predictors that we can use for our final group presentation in November. 
-  **NOTE**: Public holiday during 28th October, for Deepavali (Mia will not be available)
-
-* __Julie, Mia__: Look up Kaggle datasets that approximate our chosen model, and compare the existing work made by teammates 
-
-* __Vincent,Dion__: Depending on availability, consult with Prof Willem on the code for the process and seek some feedback.
-  
-## 3. Week 12 (1st-8 Nov):
-  As this is before a lot of final mid-terms for all group mates (who have shared their dates with each other), the focus will be to finish the bulk of the presentation and the diagnostics for the presentation.
-  
-* __Vincent, Mia__: Will structure and organize the aesthetics for the presentation. 
-
-* __Julie, Dion__: Will evaluate, improve and finalize the code for the presentation.
-  
-  As a group, we will discuss and finalize the research conclusion and additional insights we have gleaned from the process. 
-
-## 4. Week 13 (9th -15 Nov):
-  Final Group Huddle on Thursday before the final presentation on **Friday, 15th November**. 
-  We will conduct a timed rehearsal with allocation of parts to ensure equal participation in the presentation.
-  We will self-evaluate on whether the presentation is too long, the clarity of the content, etc. 
-
-## Teamwork:
+## Teamwork
 We predict an equal share of the work taken on by all team members, adjusted to their relative time constraints and their capacities.
 
 *Vincent*: As an MCS major, Vincent Will help out in the creation of classification techniques in Weeks 10-11.
 
-*Mia*: Will be involved in the preprocessing of the dataset, diagnostics on the effectiveness of the classification after the code is written by other team members, and the background research on the relative effectiveness of these techniques using Kaggle and existing resources provided by Professor Willem Van Den Boom.
+*Mia*: Will be involved in the preprocessing of the dataset, diagnostics on the effectiveness of the classification after the code is written by other team members, and the background research on the effectiveness of these techniques using Kaggle course resources
 
-*Julie*: As an MCS Major, Julie will help with the creation of the classification techniques and also the creation of the presentation for the final group presentation on November 15th.
+*Julie*: As an MCS Major, Julie will help with the classification techniques and creating slides.
 
-*Dion*: Also as an MCS Major, Dion will contribute to the EDA and improving the clarity and efficiency of the code we will present during the final presentation. 
+*Dion*: Also as an MCS Major, Dion will contribute to the EDA and improving the clarity and efficiency of the code.
