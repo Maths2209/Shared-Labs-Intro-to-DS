@@ -36,8 +36,6 @@ Rationale: An essential element of playing Pokemon is to encounter and collect l
 Rationale: For avid Pokemon players, nothing is more exciting than winning the final Pokemon league. This begs the question: what would be the best combination of 6 Pokemon to win against any other combinations? We might have to look into a variety of importants variables here when building our model, such as type, type_against, hp, attack, defense, sp_attack, sp_defense, speed and so on. 
 
 
-2)
-
 
 # Exploratory Data Analysis 
 
