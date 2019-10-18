@@ -1,0 +1,13 @@
+---
+title: "Lab8"
+author: "Dion, Julie, Mia, Vincent"
+output: 
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
