@@ -11,3 +11,28 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+This lab’s data are derived from the spambase dataset from the UCI Machine Learning Repository. The data are posted as the CSV file spam.csv and include whether an email was spam (type) and for 8 words whether they were present in the email or not. For instance, the variable george is TRUE if the email contained “george” and FALSE otherwise.
+
+```{r}
+spam <- read.csv("spam.csv")
+```
+
+
+# Exercise 1: Fit a naive Bayes classifier with type as outcome and all other variables as predictors. Your R output should contain similar information on the naive Bayes classifier as on page 222 of the textbook.
+
+
+# Exercise 2: Use your naive Bayes classifier from Exercise 4 to predict whether the 300th email is spam or not.
+```{r}
+spam[300,]
+```
+
+
+# Exercise 3: What word was most influential in determining the outcome from Exercise 2? Use the output from Exercise 1.
+
+
+# Exercise 4: Fit a decision tree using rpart and plot it. Use `rpart`’s default parameters, that is `control=rpart.control(minsplit=20, cp = .01)`.
+
+
+# Exercise 5: What is the depth of this tree? How many words, at most, does this decision tree consider before classifying an email as spam? How many words does your naive Bayes classifier from Exercise 1 consider?
+
+
