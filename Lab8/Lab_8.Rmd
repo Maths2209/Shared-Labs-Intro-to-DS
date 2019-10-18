@@ -9,6 +9,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(rpart.plot)
 ```
 
 This lab’s data are derived from the spambase dataset from the UCI Machine Learning Repository. The data are posted as the CSV file spam.csv and include whether an email was spam (type) and for 8 words whether they were present in the email or not. For instance, the variable george is TRUE if the email contained “george” and FALSE otherwise.
@@ -32,7 +33,19 @@ spam[300,]
 
 # Exercise 4: Fit a decision tree using rpart and plot it. Use `rpart`’s default parameters, that is `control=rpart.control(minsplit=20, cp = .01)`.
 
+```{r}
+fit1 <- rpart(
+  type ~ .,
+  data = spam,
+  method = "class",
+  control=rpart.control(minsplit=20, cp = .01),
+  parms=list(split='information')
+)
+rpart.plot(fit1)
+```
+
 
 # Exercise 5: What is the depth of this tree? How many words, at most, does this decision tree consider before classifying an email as spam? How many words does your naive Bayes classifier from Exercise 1 consider?
 
+Depth of tree = 4. This decision tree considers, at most, 4 words before classifying an email as spam. 
 
