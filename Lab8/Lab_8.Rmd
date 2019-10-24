@@ -58,7 +58,7 @@ Using a naive Bayes classifier, we have
 &P_Y(\vec{b}) := p(\mbox{spam}\mid b_1,b_2,\ldots,b_n) = p(\mbox{spam})\prod_{i=1}^n p(b_i \mid \mbox{spam}),
 \end{align*}
 
-where $n = 8$ in our specific context. The outcome is 'nonspam' because when we input the prediction data, $\vec{b_{300}}$, for the 300th email, we get that $P_N(\vec{b_{300}}) > P_Y(\vec{b_{300}}) \iff \frac{P_N(\vec{b_{300}})}{P_Y(\vec{b_{300}})} > 1$. Therefore, we can measure the extent to which each word, indexed by $i$, contributed to the outcome by $\frac{p(b_i \mid \mbox{nonspam})}{p(b_i \mid \mbox{spam})}$, with a larger value indicating that the word contributed more to the outcome. In fact, if the value is less than 1, the word influenced the classification towards 'spam' instead of 'nonspam'. Using the conditional probabilities given in the model without smoothing, we get
+where $n = 8$ in our specific context. The outcome is 'nonspam' because when we input the prediction data, $\vec{b}_{300}$, for the 300th email, we get that $P_N(\vec{b}_{300}) > P_Y(\vec{b}_{300}) \iff \frac{P_N(\vec{b}_{300})}{P_Y(\vec{b}_{300})} > 1$. Therefore, we can measure the extent to which each word, indexed by $i$, contributed to the outcome by $\frac{p(b_i \mid \mbox{nonspam})}{p(b_i \mid \mbox{spam})}$, with a larger value indicating that the word contributed more to the outcome. In fact, if the value is less than 1, the word influenced the classification towards 'spam' instead of 'nonspam'. Using the conditional probabilities given in the model without smoothing, we get
 
 George: 62.8, Meeting: 0.895, Labs: 0.847, Email: 1.41, Free: 2.00, Conference: 0.941, Internet: 0.215, People: 1.24.
 
