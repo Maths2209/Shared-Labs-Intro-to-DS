@@ -102,19 +102,140 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <section class="main-content">
-<p>This lab’s data are derived from the spambase dataset from the UCI Machine Learning Repository. The data are posted as the CSV file spam.csv and include whether an email was spam (type) and for 8 words whether they were present in the email or not. For instance, the variable george is TRUE if the email contained “george” and FALSE otherwise.</p>
+<p>This lab’s data are derived from the spambase dataset from the UCI Machine Learning Repository. The data are posted as the CSV file spam.csv and include whether an email was spam (type) and for 8 words whether they were present in the email or not. For instance, the variable george is TRUE if the email contained ‘george’ and FALSE otherwise.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">spam &lt;-<span class="st"> </span><span class="kw">read.csv</span>(<span class="st">&quot;spam.csv&quot;</span>)</code></pre></div>
 <div id="exercise-1-fit-a-naive-bayes-classifier-with-type-as-outcome-and-all-other-variables-as-predictors.-your-r-output-should-contain-similar-information-on-the-naive-bayes-classifier-as-on-page-222-of-the-textbook." class="section level1">
 <h1>Exercise 1: Fit a naive Bayes classifier with type as outcome and all other variables as predictors. Your R output should contain similar information on the naive Bayes classifier as on page 222 of the textbook.</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">traindata &lt;-<span class="st"> </span><span class="kw">as.data.frame</span>(spam)
+
+<span class="co">#build one model without smoothing </span>
+model &lt;-<span class="st"> </span><span class="kw">naiveBayes</span>(type <span class="op">~</span><span class="st"> </span>.,traindata)
+model</code></pre></div>
+<pre><code>## 
+## Naive Bayes Classifier for Discrete Predictors
+## 
+## Call:
+## naiveBayes.default(x = X, y = Y, laplace = laplace)
+## 
+## A-priori probabilities:
+## Y
+##   nonspam      spam 
+## 0.6059552 0.3940448 
+## 
+## Conditional probabilities:
+##          george
+## Y               FALSE        TRUE
+##   nonspam 0.723098996 0.276901004
+##   spam    0.995587424 0.004412576
+## 
+##          meeting
+## Y              FALSE       TRUE
+##   nonspam 0.88486370 0.11513630
+##   spam    0.98896856 0.01103144
+## 
+##          labs
+## Y               FALSE        TRUE
+##   nonspam 0.838235294 0.161764706
+##   spam    0.990071704 0.009928296
+## 
+##          email
+## Y             FALSE      TRUE
+##   nonspam 0.8744620 0.1255380
+##   spam    0.6205185 0.3794815
+## 
+##          free
+## Y              FALSE       TRUE
+##   nonspam 0.90961263 0.09038737
+##   spam    0.45449531 0.54550469
+## 
+##          conference
+## Y               FALSE        TRUE
+##   nonspam 0.932926829 0.067073171
+##   spam    0.991174848 0.008825152
+## 
+##          internet
+## Y              FALSE       TRUE
+##   nonspam 0.92647059 0.07352941
+##   spam    0.65857694 0.34142306
+## 
+##          people
+## Y             FALSE      TRUE
+##   nonspam 0.8809182 0.1190818
+##   spam    0.7131826 0.2868174</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#build one model with smoothing </span>
+model2 &lt;-<span class="st"> </span><span class="kw">naiveBayes</span>(type <span class="op">~</span><span class="st"> </span>.,traindata,  <span class="dt">laplace=</span>.<span class="dv">01</span>)
+model2</code></pre></div>
+<pre><code>## 
+## Naive Bayes Classifier for Discrete Predictors
+## 
+## Call:
+## naiveBayes.default(x = X, y = Y, laplace = laplace)
+## 
+## A-priori probabilities:
+## Y
+##   nonspam      spam 
+## 0.6059552 0.3940448 
+## 
+## Conditional probabilities:
+##          george
+## Y               FALSE        TRUE
+##   nonspam 0.723102582 0.276904591
+##   spam    0.995592940 0.004418092
+## 
+##          meeting
+## Y              FALSE       TRUE
+##   nonspam 0.88486729 0.11513989
+##   spam    0.98897408 0.01103696
+## 
+##          labs
+## Y               FALSE        TRUE
+##   nonspam 0.838238881 0.161768293
+##   spam    0.990077220 0.009933811
+## 
+##          email
+## Y             FALSE      TRUE
+##   nonspam 0.8744656 0.1255416
+##   spam    0.6205240 0.3794870
+## 
+##          free
+## Y              FALSE       TRUE
+##   nonspam 0.90961621 0.09039096
+##   spam    0.45450083 0.54551020
+## 
+##          conference
+## Y               FALSE        TRUE
+##   nonspam 0.932930416 0.067076758
+##   spam    0.991180364 0.008830667
+## 
+##          internet
+## Y             FALSE      TRUE
+##   nonspam 0.9264742 0.0735330
+##   spam    0.6585825 0.3414286
+## 
+##          people
+## Y             FALSE      TRUE
+##   nonspam 0.8809218 0.1190854
+##   spam    0.7131881 0.2868229</code></pre>
 </div>
 <div id="exercise-2-use-your-naive-bayes-classifier-from-exercise-4-to-predict-whether-the-300th-email-is-spam-or-not." class="section level1">
 <h1>Exercise 2: Use your naive Bayes classifier from Exercise 4 to predict whether the 300th email is spam or not.</h1>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">spam[<span class="dv">300</span>,]</code></pre></div>
-<pre><code>##     type george meeting  labs email  free conference internet people
-## 300 spam   TRUE   FALSE FALSE FALSE FALSE      FALSE     TRUE  FALSE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">testdata &lt;-<span class="st"> </span>traindata[<span class="dv">300</span>,]
+
+<span class="co">#predict using the model without smoothing </span>
+results &lt;-<span class="st"> </span><span class="kw">predict</span> (model,testdata)
+results </code></pre></div>
+<pre><code>## [1] nonspam
+## Levels: nonspam spam</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#predict using the model with smoothing </span>
+results2 &lt;-<span class="st"> </span><span class="kw">predict</span> (model2,testdata)
+results2 </code></pre></div>
+<pre><code>## [1] nonspam
+## Levels: nonspam spam</code></pre>
+<p>Based on both models, it is predicted to be not a spam.</p>
 </div>
 <div id="exercise-3-what-word-was-most-influential-in-determining-the-outcome-from-exercise-2-use-the-output-from-exercise-1." class="section level1">
 <h1>Exercise 3: What word was most influential in determining the outcome from Exercise 2? Use the output from Exercise 1.</h1>
+<p>The absence ofthe word ‘conference’ is most influential. P(nonspam|conferenceFalse) is the highest compared to the relevant conditional probabilities for other predictors.</p>
 </div>
 <div id="exercise-4-fit-a-decision-tree-using-rpart-and-plot-it.-use-rparts-default-parameters-that-is-controlrpart.controlminsplit20-cp-.01." class="section level1">
 <h1>Exercise 4: Fit a decision tree using rpart and plot it. Use <code>rpart</code>’s default parameters, that is <code>control=rpart.control(minsplit=20, cp = .01)</code>.</h1>
@@ -130,6 +251,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="exercise-5-what-is-the-depth-of-this-tree-how-many-words-at-most-does-this-decision-tree-consider-before-classifying-an-email-as-spam-how-many-words-does-your-naive-bayes-classifier-from-exercise-1-consider" class="section level1">
 <h1>Exercise 5: What is the depth of this tree? How many words, at most, does this decision tree consider before classifying an email as spam? How many words does your naive Bayes classifier from Exercise 1 consider?</h1>
+<p>Depth of tree = 4. This decision tree considers, at most, 4 words before classifying an email as spam.</p>
 </div>
 </section>
 
