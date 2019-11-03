@@ -24,7 +24,6 @@ spam <- read.csv("spam.csv")
 
 ```{r}
 traindata <- as.data.frame(spam)
-
 #build one model without smoothing 
 model <- naiveBayes(type ~ .,traindata)
 model
@@ -49,11 +48,21 @@ results2 <- predict (model2,testdata)
 results2 
 
 ```
-Based on both models, it is predicted to be not a spam. 
+Based on both models, the 300th email is predicted to not be spam. 
 
 # Exercise 3: What word was most influential in determining the outcome from Exercise 2? Use the output from Exercise 1.
 
-The absence ofthe word 'conference' is most influential. P(nonspam|conferenceFalse) is the highest compared to the relevant conditional probabilities for other predictors. 
+Using a naive Bayes classifier, we have
+\begin{align*}
+&P_N(\vec{b}) := p(\mbox{nonspam}\mid b_1,b_2,\ldots,b_n) = p(\mbox{nonspam})\prod_{i=1}^n p(b_i \mid \mbox{nonspam}) \mbox{ and} \\
+&P_Y(\vec{b}) := p(\mbox{spam}\mid b_1,b_2,\ldots,b_n) = p(\mbox{spam})\prod_{i=1}^n p(b_i \mid \mbox{spam}),
+\end{align*}
+
+where $n = 8$ in our specific context. The outcome is 'nonspam' because when we input the prediction data, $\vec{b}_{300}$, for the 300th email, we get that $P_N(\vec{b}_{300}) > P_Y(\vec{b}_{300}) \iff \frac{P_N(\vec{b}_{300})}{P_Y(\vec{b}_{300})} > 1$. Therefore, we can measure the extent to which each word, indexed by $i$, contributed to the outcome by $\frac{p(b_i \mid \mbox{nonspam})}{p(b_i \mid \mbox{spam})}$, with a larger value indicating that the word contributed more to the outcome. In fact, if the value is less than 1, the word influenced the classification towards 'spam' instead of 'nonspam'. Using the conditional probabilities given in the model without smoothing, we get
+
+George: 62.8, Meeting: 0.895, Labs: 0.847, Email: 1.41, Free: 2.00, Conference: 0.941, Internet: 0.215, People: 1.24.
+
+Therefore, the word 'George' was most influential in determining the outcome by far.
 
 # Exercise 4: Fit a decision tree using rpart and plot it. Use `rpart`’s default parameters, that is `control=rpart.control(minsplit=20, cp = .01)`.
 
@@ -71,5 +80,5 @@ rpart.plot(fit1)
 
 # Exercise 5: What is the depth of this tree? How many words, at most, does this decision tree consider before classifying an email as spam? How many words does your naive Bayes classifier from Exercise 1 consider?
 
-Depth of tree = 4. This decision tree considers, at most, 4 words before classifying an email as spam. 
+Depth of tree = 4. This decision tree considers, at most, 4 words before classifying an email as spam. In comparison, our naive Bayes classifier from Exercise 1 considers 8 words.
 
