@@ -1,0 +1,81 @@
+---
+title: "Project Proposal"
+author: "Dion, Julie, Mia, Vincent"
+output: 
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Exploratory Data Analysis 
+
+```{r}
+pokemon <- read.csv("pokemon.csv")
+```
+Our data frame has 801 observations of 41 variables. Therefore we will first remove unnecessary data.
+
+```{r}
+pokemon_trimmed <- subset(pokemon, select = -c(1, 21, 22, 24, 27, 30, 31, 32))
+pokemon_trimmed <- pokemon_trimmed[,c(25,1:24,26:33)]
+```
+
+Now we build a random forest model to predict whether an unseen pokemon is legendary or not. 
+
+```{r}
+library(randomForest)
+
+# trimming and cleaning up data for the model
+drops <- c("classfication","generation","pokedex_number")
+pokemon_trimmed <- pokemon_trimmed[ , !(names(pokemon_trimmed) %in% drops)]
+pokemon_trimmed <- pokemon_trimmed[complete.cases(pokemon_trimmed), ]
+pokemon_trimmed <- transform(pokemon_trimmed, is_legendary = as.factor(is_legendary))
+
+
+# split the trimmed data set into training set and validation set, with the ratio: 7:3 
+set.seed(100)
+train <- sample(nrow(pokemon_trimmed), 0.7*nrow(pokemon_trimmed), replace = FALSE)
+TrainSet <- pokemon_trimmed[train,]
+ValidSet <- pokemon_trimmed[-train,]
+
+# 
+model1 <- randomForest(is_legendary ~ ., data = TrainSet, importance = TRUE, na.action=na.exclude)
+model1
+```
+
+Now we test our model on the testing/validation set. 
+
+```{r}
+# Predicting on Validation set
+predValid <- predict(model1, ValidSet, type = "class")
+# Checking classification accuracy
+mean(predValid == ValidSet$is_legendary)                    
+table(predValid,ValidSet$is_legendary)
+```
+
+Now we try to find the most optimal mtry parameter to finetune the random forest model. 
+
+```{r}
+# Finetuning the model by finding the right mtry for model which gives us greater predictive power
+result=c()
+
+for (i in 3:10) {
+  model <- randomForest(is_legendary ~ ., data = TrainSet, ntree = 500, mtry = i, importance = TRUE)
+  predValid <- predict(model, ValidSet, type = "class")
+  result[i-2] = mean(predValid == ValidSet$is_legendary)
+}
+ 
+plot(3:10,result)
+```
+
+Running that above for loop a few times shows that running the model at mtry = 3 or 4 or 5 seems to generate the highest accuracy (in different runs). So keeping to the default mtry=5 seems to work well. So let's stick to that.  
+
+```{r}
+model_final <- randomForest(is_legendary ~ ., data = TrainSet, importance = TRUE, na.action=na.exclude)
+model_final
+```
+
+
