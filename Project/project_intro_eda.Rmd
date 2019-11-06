@@ -1,0 +1,80 @@
+---
+title: "Project Intro & EDA"
+author: "Yoonju Jung"
+date: "11/5/2019"
+output: 
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+The dataset we have chosen to explore is **"The Complete Pokemon Dataset"** on Kaggle.
+
+As the name of the dataset suggests, the data covers information on 802 different Pokemon from the seven generations of Pokemon. Each row of the dataset represents a Pokemon and there are 41 variables representing its different properties and powers, including its name, height, weight, base HP, abilities, etc. 
+
+Research Scenario: Predict the traits of a legendary pokemon in future generations. Use Cases: Monopolizing brand merchandise + Provide Guidance to Casual Pokemon Players
+
+**Research Question:**
+Is it possible to build a classifier to identify legendary Pokemon? Which classification method, logistic regression or decision tree, is the more suitable and accurate one?
+
+Rationale: An essential element of playing Pokemon is to encounter and collect legendary Pokemon. However, as one gets older and more isolated from the latest trend in Pokemon, it is not immediately obvious if a certain Pokemon is legendary or not. Thus, it would be helpful to have a classifier to tell us that based on the traits exhibited in a variety of predictors.
+
+
+
+## Exploratory Data Analysis 
+
+```{r}
+pokemon <- read.csv("pokemon.csv")
+```
+Our data frame is massive with 801 observations of 41 variables. Therefore we will first remove unnecessary data.
+
+```{r}
+pokemon_trimmed <- subset(pokemon, select = -c(1, 21, 22, 24, 27, 30, 31, 32))
+pokemon_trimmed <- pokemon_trimmed[,c(25,1:24,26:33)]
+```
+
+We will remove the following data: abilities, base egg steps, base happiness, capture rate, experience growth, japanese name, name, and percentage male. We will index each pokemon with their pokedex number and move that column to the leftmost position.
+
+```{r}
+unique(unlist(pokemon[,2:19]))
+```
+
+Columns 2 to 19 (against [type]) and column 32 (generation) have quantitative categorical data. We will term the row sum across columns 2 to 19 "Total Resistance" and visualise the data using a histogram.
+
+```{r}
+hist(rowSums(pokemon_trimmed[,2:19]), main = "Histogram of Total Resistances", xlab = "Total Resistance")
+hist(pokemon_trimmed[,32], main = "Histogram of Generations", xlab = "Generation")
+```
+
+Our total resistance data is approximately normally distributed except for a large number of pokemon with a total resistance of between 17 and 18, which makes the distribution slightly right-skewed. Our generation data is approximately uniformly distributed except for a smaller than average number of generation 6 and 7 pokemon. 
+
+Columns 22 (classification), 29 (type1), and 30 (type2) have qualitative categorical data. Column 33 (is_legendary) has binary data. We will use the "summary" function on these.
+
+```{r}
+summary(pokemon_trimmed[,c(22,29,30)])
+summary(pokemon_trimmed[,33]==1)
+```
+
+Most of our pokemon are non-legendary (as to be expected) with a classification, type1 or type2 of "(Other)". The variable "classification" especially may not be very informative since a great majority of the pokemon are listed under "(Other)" with less than 10 pokemon in each of the non-other categories.
+
+All other columns have continuous quantitative data. We will visualise these with a scatterplot matrix (except for the index: pokedex number).
+
+```{r}
+cont_pokemon <- subset(pokemon_trimmed, select = -c(1,2:19,22,29,30,32,33))
+pairs(cont_pokemon)
+```
+
+From the scatterplot matrix it seems like many of the continuous variables may be linearly correlated. For example, the variable "base_total" appears to be linearly correlated with every other continuous variable.
+
+
+
+
+1. Number of steps it takes to evolve (trade off over time)
+2. Outliers (which are the high-performing pokemon)
+
