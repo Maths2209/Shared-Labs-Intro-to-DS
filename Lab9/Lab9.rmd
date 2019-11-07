@@ -59,6 +59,7 @@ d <- d %>% mutate(log_freq = log(freq)) %>% mutate(perc_freq = freq / length(ccl
 p <- ggplot(d, aes(x = reorder(word, -freq), y = log_freq)) +
           geom_bar(stat = "identity") + 
           theme(axis.text.x=element_text(angle=45, hjust=1))
+
 p   
 ```
 
@@ -66,6 +67,7 @@ p
 
 ```{r}
 subset_words <- d[10 <= d$perc_freq & d$perc_freq <= 20,]
+
 # min_terms <- findFreqTerms(dtm, lowfreq = 10)
 # min_v <- sort(rowSums(m),decreasing=TRUE)
 # min_d <- data.frame(word = names(min_v),freq=min_v)
@@ -75,3 +77,29 @@ wordcloud(words = subset_words$word, freq = subset_words$freq,
           colors=brewer.pal(8, "Dark2"))
 ```
 
+#Exercise 4: Fit a logistic regression with as outcome whether the product is recommended by the reviewer. Use the TFIDF values with normalized term frequencies of the 27 words from the word cloud as predictors
+```{r}
+dtm_tfidf<- DocumentTermMatrix(ccleaned, control = list(weighting = weightTfIdf))
+
+logit <- glm(wc$tf_idf ~ ., family=binomial)
+summary(logit)
+
+```
+## Exercise 5: Which (stemmed) words had a p-value of < 2e-16 in the logistic regression and seemed to indicate a negative review?
+
+
+
+## Exericse 6: Plot an ROC curve for the logistic regression fit and compute its area under the curve.
+
+
+```{r}
+library(ROCR)
+wc_withprob <- wc
+wc_withprob$PredictedProbability <- predict(logit, type="response")
+predObj = prediction(wc_withprob$PredictedProbability, wc_withprob$SeriousDlqin2yrs)
+rocObj = performance(predObj, measure="tpr", x.measure="fpr")
+aucObj = performance(predObj, measure="auc")
+plot(rocObj, main = paste("Area under the curve:",
+round(aucObj@y.values[[1]] ,4)))
+
+```
