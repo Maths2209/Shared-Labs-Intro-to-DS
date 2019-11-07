@@ -16,12 +16,13 @@ library(dplyr)
 library(wordcloud)
 library(RColorBrewer)
 library(ggplot2)
+library(ROCR)
 ```
 
-# Exericse 1: Take the review texts from the Women’s E-Commerce Clothing Reviews and turn them into a corpus. Change all upper case to lower case, remove punctuation, number and stopwords, stem the words, and delete any reviews with no text.
+# Exercise 1: Take the review texts from the Women’s E-Commerce Clothing Reviews and turn them into a corpus. Change all upper case to lower case, remove punctuation, number and stopwords, stem the words, and delete any reviews with no text.
 
 ```{r}
-wc <- read.csv(file = "Womens Clothing E-Commerce Reviews.csv", stringsAsFactors = FALSE)
+wc <- read.csv(file = "Womens Clothing E-Commerce Reviews.csv",na.strings = c("", "NA"), stringsAsFactors = FALSE)
 
 # Create Corpus
 corpus <- VCorpus(VectorSource(wc$Review.Text))
@@ -32,43 +33,77 @@ clean_corpus <- function(corpus){
   corpus <- tm_map(corpus, removeNumbers)
   corpus <- tm_map(corpus, removeWords, stopwords("en"))
   corpus <- tm_map(corpus, stemDocument)
-  corpus <- tm_filter(corpus, FUN = function(x) content(x) != "")
+  corpus <- tm_filter(corpus, FUN = function(x) content(x) != "NA")
   return(corpus)
 }
 
 ccleaned <- clean_corpus(corpus)
 ccleaned
+
+wc <- wc[!is.na(wc$Review.Text),] #Delete any reviews with no text in the dataframe.
 ```
 
-# Exercise 1 Continued: DocumentTermMatrix(corpus) creates a document-term matrix with each entry counting how often the term corresponding with the column appears in the document corresponding with the row. DocumentTermMatrix does not return a standard matrix object, but one can transform it to matrix using as.matrix.
-
 ```{r}
-dtm <- TermDocumentMatrix(ccleaned)
-m <- as.matrix(dtm)
-v <- sort(rowSums(m),decreasing=TRUE)
+m <- as.matrix(DocumentTermMatrix(ccleaned))
+v <- sort(colSums(m),decreasing=TRUE)
 d <- data.frame(word = names(v),freq=v)
 head(d, 10)
 ```
 
-#Exercise 2: Make a histogram of the log of the document frequencies of all the terms in the corpus. For simplicity, let us constrain ourselves for the remainder of this lab to the 27 words that appear in no less than 10% and no more than 20% of all documents.
+# Exercise 2: Make a histogram of the log of the document frequencies of all the terms in the corpus.
 
 ```{r}
-d2 <- d %>% mutate(log_freq = log(freq)) %>% 
+hist_data <- d %>% mutate(log_freq = log(freq)) %>% 
   mutate(perc_freq = freq / length(ccleaned) * 100)
 
-p <- ggplot(d2, aes(x = reorder(word, -freq), y = log_freq)) +
-          geom_bar(stat = "identity")
+p <- ggplot(hist_data, aes(x = reorder(word, -freq), y = log_freq)) + geom_bar(stat = "identity") + scale_x_discrete(breaks = seq(0, 10, by = 0.5))
 p   
+```
+
+# Exercise 2 Continued: For simplicity, let us constrain ourselves for the remainder of this lab to the 27 words that appear in no less than 10% and no more than 20% of all documents.
+
+```{r}
+m <- as.matrix(DocumentTermMatrix(ccleaned, control=list(bounds = list(global = c(0.1*length(ccleaned),0.2*length(ccleaned))))))
+v <- sort(colSums(m),decreasing=TRUE)
+d <- data.frame(word = names(v),freq=v)
+length(d$word)
+head(d,27)
 ```
 
 # Exercise 3: Create a word cloud of these 27 (stemmed) words where the size of the words is determined by their document frequency. Hint: Use Google if you do not know how to make a word cloud in R.
 
 ```{r}
-subset_words <- d2[10 <= d2$perc_freq & d2$perc_freq <= 20,]
-
 set.seed(1234)
-wordcloud(words = subset_words$word, freq = subset_words$freq,
+wordcloud(words = d$word, freq = d$freq,
           random.order=FALSE, scale=c(4,.5),
           colors=brewer.pal(8, "Dark2"))
 ```
 
+# Exercise 4: Fit a logistic regression with as outcome whether the product is recommended by the reviewer. Use the TFIDF values with normalized term frequencies of the 27 words from the word cloud as predictors
+
+```{r, warning=FALSE}
+dtm_tfidf <- as.matrix(DocumentTermMatrix(ccleaned, control = list(bounds = list(global = c(0.1*length(ccleaned),0.2*length(ccleaned))), weighting = function(x) weightTfIdf(x, normalize = TRUE))))
+dtm_tfidf <- as.data.frame(dtm_tfidf)
+dtm_tfidf$outcome <- wc$Recommended.IND
+```
+
+```{r}
+logit <- glm(outcome ~ ., data = dtm_tfidf, family=binomial)
+summary(logit)
+```
+
+
+# Exercise 5: Which (stemmed) words had a p-value of < 2e-16 in the logistic regression and seemed to indicate a negative review?
+
+The words are "also", "back", "fabric", and "materi".
+
+# Exercise 6: Plot an ROC curve for the logistic regression fit and compute its area under the curve.
+
+```{r}
+PredictedProbability <- predict(logit, type="response")
+predObj = prediction(PredictedProbability, dtm_tfidf$outcome)
+rocObj = performance(predObj, measure="tpr", x.measure="fpr")
+aucObj = performance(predObj, measure="auc")
+plot(rocObj, main = paste("Area under the curve:",
+round(aucObj@y.values[[1]] ,4)))
+```
