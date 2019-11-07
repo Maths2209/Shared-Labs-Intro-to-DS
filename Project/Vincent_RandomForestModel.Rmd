@@ -74,7 +74,7 @@ plot(3:10,result)
 Running that above for loop a few times shows that running the model at mtry = 3 or 4 or 5 seems to generate the highest accuracy (in different runs). So keeping to the default mtry=5 seems to work well. So let's stick to that.  
 
 ```{r}
-model_final <- randomForest(is_legendary ~ ., data = TrainSet, importance = TRUE, na.action=na.exclude)
+model_final <- randomForest(is_legendary ~ ., data = TrainSet, importance = TRUE, na.action=na.exclude, mtry = 5)
 model_final
 ```
 
