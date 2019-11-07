@@ -1,16 +1,13 @@
 ---
 title: "Lab9"
 author: "Dion, Julie, Mia, Vincent"
-date: "9/20/2019"
+date: "11/8/2019"
 output: 
     prettydoc::html_pretty:
     theme: cayman
     highlight: github
 ---
 ```{r setup, include=FALSE}
-#install.packages("wordcloud") # word-cloud generator 
-#install.packages("RColorBrewer") # color palettes
-
 knitr::opts_chunk$set(echo = TRUE)
 library(knitr)       # used to make kable tables
 library(tm)
@@ -19,16 +16,15 @@ library(dplyr)
 library(wordcloud)
 library(RColorBrewer)
 library(ggplot2)
-wc <- read.csv(file = "Womens Clothing E-Commerce Reviews.csv", stringsAsFactors = FALSE)
 ```
 
 # Exericse 1: Take the review texts from the Women’s E-Commerce Clothing Reviews and turn them into a corpus. Change all upper case to lower case, remove punctuation, number and stopwords, stem the words, and delete any reviews with no text.
 
 ```{r}
-contentCorpus <- wc$Review.Text
+wc <- read.csv(file = "Womens Clothing E-Commerce Reviews.csv", stringsAsFactors = FALSE)
 
 # Create Corpus
-ccorpus <- VCorpus(VectorSource(contentCorpus))
+corpus <- VCorpus(VectorSource(wc$Review.Text))
 
 clean_corpus <- function(corpus){
   corpus <- tm_map(corpus, content_transformer(tolower))
@@ -40,13 +36,11 @@ clean_corpus <- function(corpus){
   return(corpus)
 }
 
-ccleaned <- clean_corpus(ccorpus)
-head(ccleaned,5)
+ccleaned <- clean_corpus(corpus)
+ccleaned
 ```
 
 # Exercise 1 Continued: DocumentTermMatrix(corpus) creates a document-term matrix with each entry counting how often the term corresponding with the column appears in the document corresponding with the row. DocumentTermMatrix does not return a standard matrix object, but one can transform it to matrix using as.matrix.
-
-
 
 ```{r}
 # MATRIX
@@ -60,9 +54,9 @@ head(d, 10)
 #Exercise 2: Make a histogram of the log of the document frequencies of all the terms in the corpus. For simplicity, let us constrain ourselves for the remainder of this lab to the 27 words that appear in no less than 10% and no more than 20% of all documents.
 
 ```{r}
-d <- d %>% mutate(log_freq = log(freq))
+d <- d %>% mutate(log_freq = log(freq)) %>% mutate(perc_freq = freq / length(ccleaned) * 100)
 
-p <- ggplot(subset(d, log_freq>0), aes(x = reorder(word, -freq), y = freq)) +
+p <- ggplot(d, aes(x = reorder(word, -freq), y = log_freq)) +
           geom_bar(stat = "identity") + 
           theme(axis.text.x=element_text(angle=45, hjust=1))
 p   
@@ -71,45 +65,13 @@ p
 #Exercise 3: Create a word cloud of these 27 (stemmed) words where the size of the words is determined by their document frequency. Hint: Use Google if you do not know how to make a word cloud in R.
 
 ```{r}
-min_terms <- findFreqTerms(dtm, lowfreq = 10, highfreq = 20)
-min_m <- as.matrix(dtm)
-min_v <- sort(rowSums(min_m),decreasing=TRUE)
-min_d <- data.frame(word = names(min_v),freq=min_v)
+subset_words <- d[10 <= d$perc_freq & d$perc_freq <= 20,]
+# min_terms <- findFreqTerms(dtm, lowfreq = 10)
+# min_v <- sort(rowSums(m),decreasing=TRUE)
+# min_d <- data.frame(word = names(min_v),freq=min_v)
 set.seed(1234)
-wordcloud(words = d$word, freq = d$freq, min.freq = 1,
-          max.words=200, random.order=FALSE, rot.per=0.35, 
+wordcloud(words = subset_words$word, freq = subset_words$freq,
+          random.order=FALSE, rot.per=0.35, 
           colors=brewer.pal(8, "Dark2"))
 ```
-
-#Exercise 4: Fit a logistic regression with as outcome whether the product is recommended by the reviewer. Use the TFIDF values with normalized term frequencies of the 27 words from the word cloud as predictors
-```{r}
-dtm_tfidf<- DocumentTermMatrix(ccleaned, control = list(weighting = weightTfIdf))
-
-logit <- glm(wc$tf_idf ~ ., family=binomial)
-summary(logit)
-
-```
-## Exercise 5: Which (stemmed) words had a p-value of < 2e-16 in the logistic regression and seemed to indicate a negative review?
-
-
-
-## Exericse 6: Plot an ROC curve for the logistic regression fit and compute its area under the curve.
-
-
-```{r}
-library(ROCR)
-wc_withprob <- wc
-wc_withprob$PredictedProbability <- predict(logit, type="response")
-predObj = prediction(wc_withprob$PredictedProbability, wc_withprob$SeriousDlqin2yrs)
-rocObj = performance(predObj, measure="tpr", x.measure="fpr")
-aucObj = performance(predObj, measure="auc")
-plot(rocObj, main = paste("Area under the curve:",
-round(aucObj@y.values[[1]] ,4)))
-
-```
-
-
-
-
-
 
