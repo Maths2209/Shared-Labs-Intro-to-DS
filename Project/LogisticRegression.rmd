@@ -1,0 +1,42 @@
+---
+title: "LogisticRegression"
+output: html_document
+---
+
+```{r}
+
+library(dplyr)
+data <- read.csv("pokemon.csv")
+
+## Create Dummy Variable 
+data$is_legendary_dummy <- as.numeric(data$is_legendary)
+
+## Subset the data 
+
+data_elemental <- data %>% select(is_legendary, against_bug, against_dark, against_dragon, against_electric, against_fairy, against_fight, against_fire, against_flying, against_ghost, against_grass, against_ground, against_psychic) 
+
+## Create logistic regression fit
+
+lm1 = glm(is_legendary ~ ., data = data2, family = binomial)
+
+summary(lm1)
+```
+
+```{r}
+
+predictpokemon = predict(lm1, type = "response")
+boxplot(predictpokemon ~ data2$is_legendary)
+table(data2$is_legendary, predictpokemon >= 0.5)
+
+```
+```{r}
+library(ROCR)
+predObj = prediction(predictpokemon, data2$is_legendary)
+rocObj = performance(predObj, measure="tpr", x.measure="fpr")
+aucObj = performance(predObj, measure="auc")
+plot(rocObj, main = paste("Area under the curve:",
+round(aucObj@y.values[[1]] ,4)))
+
+
+
+```
