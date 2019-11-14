@@ -98,7 +98,7 @@ hist(pokemon_trimandcombine$capture_rate)
 hist(pokemon_trimandcombine$experience_growth)
 ```
 
-We cannot easily remove outliers because many of them are data for legendary pokemon, and we do not have many data points for legendary Pokemon.
+We cannot easily remove outliers because many of them are data for legendary pokemon, and we do not have many data points for legendary Pokemon (maybe we can still remove outliers, IDK).
 
 Next, let us consider only the variables which directly affect ingame Pokemon battles: i.e. speed, avg_ehp, and avg_attack. We will perform PCA on these variables.
 
@@ -172,8 +172,6 @@ While ridge regularisation can ameliorate these problems for logistic regression
 
 (Can elaborate on this section)
 
-## Random Forest
-
 ```{r}
 length(unique(pokemon$type1))
 length(unique(pokemon$type2))
@@ -190,30 +188,7 @@ set.seed(100)
 train <- sample(nrow(pokemon_trim), 0.7*nrow(pokemon_trim), replace = FALSE)
 TrainSet1 <- pokemon_trim[train,]
 ValidSet1 <- pokemon_trim[-train,]
-
-# train the decision tree model 
-library(rpart.plot)
-model0 <- rpart(is_legendary ~ ., 
-                data = TrainSet1,
-                method = "class",
-                control=rpart.control(minsplit=20, cp = .01),
-                parms=list(split='information'))
-rpart.plot(model0)
-```
-
-
-```{r}
 # 
-predValid0 <- predict(model0, ValidSet1, type = "class")
-# Checking classification accuracy
-mean(predValid0 == ValidSet1$is_legendary)                    
-table(predValid0,ValidSet1$is_legendary)
-```
-
-
-
-```{r}
-# train the random forest model 
 model1 <- randomForest(is_legendary ~ ., data = TrainSet1, importance = TRUE, na.action=na.exclude)
 model1
 ```
@@ -243,7 +218,9 @@ for (i in 3:10) {
 plot(3:10,result1)
 ```
 
-Running that above for loop a few times shows that running the model at mtry = 7 seems to generate the highest accuracy (in different runs). So we are changing to mtry=7.
+Dion: After my changes, should we use mtry = 7?
+
+Vincent: Running that above for loop a few times shows that running the model at mtry = 3 or 4 or 5 seems to generate the highest accuracy (in different runs). So keeping to the default mtry=5 seems to work well. So let's stick to that.
 
 ```{r}
 model_final1 <- randomForest(is_legendary ~ ., data = TrainSet1, importance = TRUE, na.action=na.exclude, mtry = 7)
@@ -294,7 +271,7 @@ model_final2 <- randomForest(is_legendary ~ ., data = TrainSet2, importance = TR
 plot(getTree(model_final2))
 ```
 
-
+(How to visualise and evaluate the entire forest?)
 
 ```{r}
 tree_func <- function(final_model, #Function to visualise a tree from the random forest, taken from https://shiring.github.io/machine_learning/2017/03/16/rf_plot_ggraph
