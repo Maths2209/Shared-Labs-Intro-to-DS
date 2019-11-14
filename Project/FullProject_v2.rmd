@@ -16,7 +16,9 @@ library(factoextra)
 library(randomForest)
 ```
 
-## Exploratory Data Analysis
+# Exploratory Data Analysis
+
+### Data Cleaning
 
 We will first remove the non-numeric variables: abilities, classification, japanese name, name, primary type, secondary type. Next, we remove "pokedex_number" since it merely indexes the Pokemon, and "base_total" since it is but the sum of the variables: attack, sp_attack, defense, sp_defense, HP, and speed. Finally, we will exclude the variable "percentage_male" because that entry is "NA" for most legendary Pokemon.
 
@@ -29,6 +31,8 @@ summary(is.na(pokemon[pokemon$is_legendary==1,]$percentage_male))
 pokemon_trim <- na.omit(subset(pokemon, select = -c(1, 23, 25, 30, 31, 32, 33, 37, 38)))
 pokemon_trim$capture_rate <- as.numeric(levels(pokemon_trim$capture_rate)[pokemon_trim$capture_rate])
 ```
+
+### Principal Component Analysis (PCA)
 
 
 We suspect that legendary pokemon are more "powerful" (the "power" of a pokemon remains a vague concept at the moment though). We also suspect that there is significant multicollinearity between many of our variables: e.g. height and weight, attack and sp_attack, defense and sp_defense and much more. Therefore, we perform PCA to check for multicollinearity in our data. Note that all the PCAs we perform will be normalised to avoid problems with scale.
@@ -98,7 +102,7 @@ hist(pokemon_trimandcombine$capture_rate)
 hist(pokemon_trimandcombine$experience_growth)
 ```
 
-We cannot easily remove outliers because many of them are data for legendary pokemon, and we do not have many data points for legendary Pokemon (maybe we can still remove outliers, IDK).
+We cannot easily remove outliers because many of them are data for legendary pokemon, and we do not have many data points for legendary Pokemon.
 
 Next, let us consider only the variables which directly affect ingame Pokemon battles: i.e. speed, avg_ehp, and avg_attack. We will perform PCA on these variables.
 
@@ -124,6 +128,8 @@ for (i in 1:7) {
 }
 plot(avg_legend)
 ```
+
+### Overlapping Histograms: Distribution of Variables
 
 Let us plot overlapping histograms to give us an indication of the distribution of the variables: speed, avg_attack, and avg_ehp.
 
@@ -154,11 +160,18 @@ pokemon_trimandcombine_power_legend <- pokemon_trimandcombine_power[pokemon_trim
 pokemon_trimandcombine_power_nonlegend <- pokemon_trimandcombine_power[pokemon_trimandcombine$is_legendary == 0,]
 ```
 
+
+### Hypothesis Testing
+
 Hypothesis testing (specifically Welch one-tailed t-test) gives us high confidence (p-value $<2.2 \times 10^{-16}$) in rejecting the null hypothesis that legendary Pokemon are no more powerful than non-legdenary Pokemon.
 
 ```{r}
 t.test(pokemon_trimandcombine_power_legend$zpower, pokemon_trimandcombine_power_nonlegend$zpower, "greater")
 ```
+
+# Classification Methods
+
+### Consideration of Logistic Regression
 
 We now want to create a model to classify legendary Pokemon. We would rather use random forests than a logistic regression for three main reasons: 
 
@@ -170,12 +183,13 @@ We now want to create a model to classify legendary Pokemon. We would rather use
 
 While ridge regularisation can ameliorate these problems for logistic regression, a random forest model remains easier to implement and should be more accurate.
 
-(Can elaborate on this section)
 
 ```{r}
 length(unique(pokemon$type1))
 length(unique(pokemon$type2))
 ```
+
+### Decision Tree Model
 
 Now we explore decision tree and random forest models. We implement the decision tree model first.  
 
@@ -201,16 +215,17 @@ rpart.plot(model1_trim)
 We want to see its accuracy and confusion matrix. 
 
 ```{r}
-predValid1_trim <- predict(model0_trim, ValidSet2, type = "class")
+predValid1_trim <- predict(model1_trim, ValidSet2, type = "class")
 # Checking classification accuracy
 mean(predValid1_trim == ValidSet2$is_legendary)                    
 table(predValid1_trim,ValidSet2$is_legendary)
 ```
 
+### Random Forest Model
+
 Now we implement the random forest model. 
 
 ```{r}
-# 
 model2 <- randomForest(is_legendary ~ ., data = TrainSet2, importance = TRUE, na.action=na.exclude)
 model2
 ```
@@ -295,6 +310,6 @@ tree_func <- function(final_model, #Function to visualise a tree from the random
   
   print(plot)
 }
-tree_func(model_final1, 2)
+#tree_func(model_final1, 2)
 tree_func(model_final2, 2)
 ```
