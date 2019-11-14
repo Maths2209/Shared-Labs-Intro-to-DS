@@ -1,0 +1,300 @@
+---
+title: "Project Proposal"
+author: "Dion, Julie, Mia, Vincent"
+output: 
+    prettydoc::html_pretty:
+    theme: cayman
+    highlight: github
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggraph)
+library(igraph)
+library(factoextra)
+library(randomForest)
+```
+
+## Exploratory Data Analysis
+
+We will first remove the non-numeric variables: abilities, classification, japanese name, name, primary type, secondary type. Next, we remove "pokedex_number" since it merely indexes the Pokemon, and "base_total" since it is but the sum of the variables: attack, sp_attack, defense, sp_defense, HP, and speed. Finally, we will exclude the variable "percentage_male" because that entry is "NA" for most legendary Pokemon.
+
+```{r}
+pokemon <- read.csv("pokemon.csv")[-774,] #Entry 774 has a non-numeric entry in the variable "capture_rate".
+summary(is.na(pokemon[pokemon$is_legendary==1,]$percentage_male))
+```
+
+```{r}
+pokemon_trim <- na.omit(subset(pokemon, select = -c(1, 23, 25, 30, 31, 32, 33, 37, 38)))
+pokemon_trim$capture_rate <- as.numeric(levels(pokemon_trim$capture_rate)[pokemon_trim$capture_rate])
+```
+
+
+We suspect that legendary pokemon are more "powerful" (the "power" of a pokemon remains a vague concept at the moment though). We also suspect that there is significant multicollinearity between many of our variables: e.g. height and weight, attack and sp_attack, defense and sp_defense and much more. Therefore, we perform PCA to check for multicollinearity in our data. Note that all the PCAs we perform will be normalised to avoid problems with scale.
+
+```{r}
+pca <- prcomp(pokemon_trim, scale. = TRUE)
+fviz_eig(pca)
+fviz_pca_var(pca,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE,    # Avoid text overlapping
+             select.var = list(contrib = 10)
+)
+```
+
+Plotting the 10 variables which contribute most to the first two principal components, we can already see that legendary status may be positively correlated with the variables: height, weight, base_egg_steps, sp_attack, and attack.
+
+Let us attempt to combine some of our variables. We will combine the "against" variables with the "defense", "HP", and "sp_defense" variables to form the "avg_ehp" (average effective HP) variable. We will also combine the "attack" and "sp_attack" variables to form the "avg_ehp" (average effective HP) variable. (These are based on how combat damage is calculated in the Pokemon and is quite lengthy to explain).
+
+```{r}
+pokemon_trimandcombine <- subset(pokemon_trim, select = -c(1:19,23,26:28))
+avg_multiplier <- rowMeans(pokemon_trim[,1:18])
+pokemon_trimandcombine$avg_ehp <- ((pokemon_trim$hp*pokemon_trim$defense + pokemon_trim$hp*pokemon_trim$sp_defense)/200)/avg_multiplier
+pokemon_trimandcombine$avg_attack <- (pokemon_trim$sp_attack + pokemon_trim$attack)/2
+```
+
+Now, let us re-perform PCA.
+
+```{r}
+pca_trimandcombine <- prcomp(pokemon_trimandcombine, scale. = TRUE)
+fviz_eig(pca_trimandcombine)
+fviz_pca_var(pca_trimandcombine,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE,     # Avoid text overlapping
+             select.var = list(contrib = 10)
+)
+```
+
+The correlations look much stronger now.
+
+```{r}
+pokemon_trimandcombine_pred <- subset(pokemon_trimandcombine, select = -9)
+pca_trimandcombine_pred <- prcomp(pokemon_trimandcombine_pred, scale. = TRUE)
+fviz_eig(pca_trimandcombine_pred)
+fviz_pca_var(pca_trimandcombine_pred,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE,     # Avoid text overlapping
+             select.var = list(contrib = 10)
+)
+```
+
+However, our PCA plots, especially this plot without the dependent variable "is_legendary", indicate significant multicollinearity between the predictors, especially between the variables: speed, avg_attack, avg_ehp, base_egg_steps, height, and weight.
+
+It should be noted though that PCA is quite sensitive to outliers and unfortunately there are extreme outliers in the data for the variables: height, weight, base_egg_steps, avg_ehp, base_happiness, and experience_growth. The variable base_happiness also appears to be a poor predictor since there is little variance in its data apart from extreme outliers.
+
+```{r}
+hist(pokemon_trimandcombine$height_m)
+hist(pokemon_trimandcombine$weight_kg)
+hist(pokemon_trimandcombine$speed)
+hist(pokemon_trimandcombine$avg_ehp)
+hist(pokemon_trimandcombine$avg_attack)
+hist(pokemon_trimandcombine$base_egg_steps)
+hist(pokemon_trimandcombine$base_happiness)
+hist(pokemon_trimandcombine$capture_rate)
+hist(pokemon_trimandcombine$experience_growth)
+```
+
+We cannot easily remove outliers because many of them are data for legendary pokemon, and we do not have many data points for legendary Pokemon (maybe we can still remove outliers, IDK).
+
+Next, let us consider only the variables which directly affect ingame Pokemon battles: i.e. speed, avg_ehp, and avg_attack. We will perform PCA on these variables.
+
+```{r}
+pokemon_trimandcombine_power <- subset(pokemon_trimandcombine, select = c(6,10,11))
+pca_power <- prcomp(pokemon_trimandcombine_power, scale. = TRUE)
+fviz_eig(pca_power)
+fviz_pca_var(pca_power,
+             col.var = "contrib", # Color by contributions to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             repel = TRUE     # Avoid text overlapping
+)
+```
+
+The PCA plot indicates that these variables are highly positively correlated (first PC captures 62.9% of the variance). This indicates that there are Pokemon which are much more battle effective than others, and we can conceptualise such ingame battle effectiveness as the "power" of a Pokemon.
+
+Fun fact: There is a spike in the number of legendary Pokemon in generation 7. Though we cannot make many strong conclusions since the data comprises of only 7 points.
+
+```{r}
+avg_legend <- vector(mode = "numeric", 7)
+for (i in 1:7) {
+  avg_legend[i] = sum(pokemon_trim[pokemon_trim$generation==i,]$is_legendary)/length(pokemon_trim[pokemon_trim$generation==i,]$is_legendary)
+}
+plot(avg_legend)
+```
+
+Let us plot overlapping histograms to give us an indication of the distribution of the variables: speed, avg_attack, and avg_ehp.
+
+```{r}
+ggplot(pokemon_trimandcombine, aes(x=speed, fill=(is_legendary==1))) +
+  geom_histogram(position="identity")
+ggplot(pokemon_trimandcombine, aes(x=avg_attack, fill=(is_legendary==1))) +
+  geom_histogram(position="identity")
+ggplot(pokemon_trimandcombine, aes(x=avg_ehp, fill=(is_legendary==1))) +
+  geom_histogram(position="identity")
+```
+
+It seems true that legendary Pokemon are faster, have stronger attacks, and have more effective HP than non-legendary Pokemon. Nonetheless, we will want to confirm this via hypothesis testing. Hypothesis testing assumes the data is normally distributed though and that assumption is questionable for the data we currently have.
+
+Partly to ameliorate this problem, we will combine the z-scores of the variables to form a new variable "zpower". We also bound zpower to $[-3,3]$, our justification for this is that we will not want to battle ingame with Pokemon which abilities are extremely skewed: e.g. Pokemon which one-shot everything but are themselves one-shotted by everything, or Pokemon which are invulnerable but take forever to win a battle.
+
+```{r}
+zpower = rep(0, length(pokemon_trimandcombine$is_legendary))
+for (i in range(1, 3)){
+  v = pokemon_trimandcombine_power[,i]
+  zpower = zpower + pmin(pmax(((v - mean(v))/sd(v)),-3),3)
+}
+pokemon_trimandcombine$zpower = zpower/3
+pokemon_trimandcombine_power$zpower = zpower/3
+ggplot(pokemon_trimandcombine, aes(x=zpower, fill=(is_legendary==1))) +
+  geom_histogram(position="identity")
+pokemon_trimandcombine_power_legend <- pokemon_trimandcombine_power[pokemon_trimandcombine$is_legendary == 1,]
+pokemon_trimandcombine_power_nonlegend <- pokemon_trimandcombine_power[pokemon_trimandcombine$is_legendary == 0,]
+```
+
+Hypothesis testing (specifically Welch one-tailed t-test) gives us high confidence (p-value $<2.2 \times 10^{-16}$) in rejecting the null hypothesis that legendary Pokemon are no more powerful than non-legdenary Pokemon.
+
+```{r}
+t.test(pokemon_trimandcombine_power_legend$zpower, pokemon_trimandcombine_power_nonlegend$zpower, "greater")
+```
+
+We now want to create a model to classify legendary Pokemon. We would rather use random forests than a logistic regression for three main reasons: 
+
+1) multicollinearity of predictors adversely affects the results from the logistic model whereas the random forest method is robust against the multicollinearity of predictors,
+
+2) given the number of variables we have, overfitting/model selection is a major concern. The random forest method deals with overfitting well and its model selection process is easier.
+
+3) we would like to include the categorical variables: type1 and type2 in our model (we initially removed these variables because they are non-numeric). For a logistic regression, this can only be done by creating 35 binary variables which is extremely troublesome and aggravates the overfitting/model selection problem. The random forest method is naturally suited for categorical variables.
+
+While ridge regularisation can ameliorate these problems for logistic regression, a random forest model remains easier to implement and should be more accurate.
+
+(Can elaborate on this section)
+
+```{r}
+length(unique(pokemon$type1))
+length(unique(pokemon$type2))
+```
+
+Now we explore decision tree and random forest models. We implement the decision tree model first.  
+
+```{r}
+pokemon_trimandcombine <- subset(pokemon_trimandcombine, select = -12)
+pokemon_trimandcombine <- transform(pokemon_trimandcombine, is_legendary = as.factor(is_legendary))
+
+# split the trim data set into training set and validation set, with the ratio: 7:3 
+set.seed(100)
+train <- sample(nrow(pokemon_trimandcombine), 0.7*nrow(pokemon_trimandcombine), replace = FALSE)
+TrainSet2 <- pokemon_trimandcombine[train,]
+ValidSet2 <- pokemon_trimandcombine[-train,]
+
+library(rpart.plot)
+model1_trim <- rpart(is_legendary ~ ., 
+                data = TrainSet2,
+                method = "class",
+                control=rpart.control(minsplit=20, cp = .01),
+                parms=list(split='information'))
+rpart.plot(model1_trim)
+```
+
+We want to see its accuracy and confusion matrix. 
+
+```{r}
+predValid1_trim <- predict(model0_trim, ValidSet2, type = "class")
+# Checking classification accuracy
+mean(predValid1_trim == ValidSet2$is_legendary)                    
+table(predValid1_trim,ValidSet2$is_legendary)
+```
+
+Now we implement the random forest model. 
+
+```{r}
+# 
+model2 <- randomForest(is_legendary ~ ., data = TrainSet2, importance = TRUE, na.action=na.exclude)
+model2
+```
+
+We want to see its accuracy and confusion matrix. 
+
+```{r}
+# Predicting on Validation set
+predValid2 <- predict(model2, ValidSet2, type = "class")
+# Checking classification accuracy
+mean(predValid2 == ValidSet2$is_legendary)                    
+table(predValid2,ValidSet2$is_legendary)
+```
+
+```{r}
+# Finetuning the model by finding the right mtry for model which gives us greater predictive power
+result2=c()
+
+for (i in 3:10) {
+  model2 <- randomForest(is_legendary ~ ., data = TrainSet2, ntree = 500, mtry = i, importance = TRUE)
+  predValid2 <- predict(model2, ValidSet2, type = "class")
+  result2[i-2] = mean(predValid2 == ValidSet2$is_legendary)
+}
+ 
+plot(3:10,result2)
+```
+
+mtry = 3 is a good parameter. So we will stick with him. 
+
+```{r}
+model_final2 <- randomForest(is_legendary ~ ., data = TrainSet2, importance = TRUE, na.action=na.exclude, mtry = 3)
+```
+
+Now we grab one tree from the random forest and visualize it. 
+
+```{r}
+tree_func <- function(final_model, #Function to visualise a tree from the random forest, taken from https://shiring.github.io/machine_learning/2017/03/16/rf_plot_ggraph
+                      tree_num) {
+  
+  # get tree by index
+  tree <- randomForest::getTree(final_model, 
+                                k = tree_num, 
+                                labelVar = TRUE) %>%
+    tibble::rownames_to_column() %>%
+    # make leaf split points to NA, so the 0s won't get plotted
+    mutate(`split point` = ifelse(is.na(prediction), `split point`, NA))
+  
+  # prepare data frame for graph
+  graph_frame <- data.frame(from = rep(tree$rowname, 2),
+                            to = c(tree$`left daughter`, tree$`right daughter`))
+  
+  # convert to graph and delete the last node that we don't want to plot
+  graph <- graph_from_data_frame(graph_frame) %>%
+    delete_vertices("0")
+  
+  # set node labels
+  V(graph)$node_label <- gsub("_", " ", as.character(tree$`split var`))
+  V(graph)$leaf_label <- as.character(tree$prediction)
+  V(graph)$split <- as.character(round(tree$`split point`, digits = 2))
+  
+  # plot
+  plot <- ggraph(graph, 'dendrogram') + 
+    theme_bw() +
+    geom_edge_link() +
+    geom_node_point() +
+    geom_node_text(aes(label = node_label), na.rm = TRUE, repel = TRUE) +
+    geom_node_label(aes(label = split), vjust = 2.5, na.rm = TRUE, fill = "white") +
+    geom_node_label(aes(label = leaf_label, fill = leaf_label), na.rm = TRUE, 
+					repel = TRUE, colour = "white", fontface = "bold", show.legend = FALSE) +
+    theme(panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank(),
+          panel.background = element_blank(),
+          plot.background = element_rect(fill = "white"),
+          panel.border = element_blank(),
+          axis.line = element_blank(),
+          axis.text.x = element_blank(),
+          axis.text.y = element_blank(),
+          axis.ticks = element_blank(),
+          axis.title.x = element_blank(),
+          axis.title.y = element_blank(),
+          plot.title = element_text(size = 18))
+  
+  print(plot)
+}
+tree_func(model_final1, 2)
+tree_func(model_final2, 2)
+```
